@@ -1,0 +1,29 @@
+<div class="blog-post-page">
+  <!-- حالة التحميل -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>جاري تحميل المقال...</p>
+  </div>
+
+  <!-- محتوى المقال بعد التحميل -->
+  <div *ngIf="!isLoading && post" class="post-container">
+
+    <!-- الصورة البارزة كخلفية للعنوان -->
+    <header class="post-hero-header" [style.background-image]="'url(' + getPostImage(post) + ')'">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1 class="post-title">{{ post.title.rendered }}</h1>
+        <div class="post-meta">
+          <span><i class="fas fa-calendar-alt"></i> {{ post.date | date:'longDate':'':'ar' }}</span>
+          <span *ngIf="post._embedded && post._embedded['author']"><i class="fas fa-user"></i> {{ post._embedded['author'][0].name }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- جسم المقال -->
+    <article class="post-body-wrapper">
+      <div class="post-body" [innerHTML]="post.content.rendered"></div>
+    </article>
+
+  </div>
+</div>

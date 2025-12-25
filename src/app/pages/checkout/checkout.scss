@@ -1,0 +1,227 @@
+// --- متغيرات الألوان والهوية البصرية ---
+$primary-color: #8a5a2b;
+$secondary-color: #c4a747;
+$background-color: #fdfaf5;
+$text-color: #4a3f35;
+$card-bg: #ffffff;
+$border-color: #e0d7c7;
+$success-color: #28a745;
+$warning-color: #ff9800;
+
+// --- الخطوط ---
+$font-family-headings: 'Cairo', 'Segoe UI', sans-serif;
+$font-family-base: 'Cairo', 'Segoe UI', sans-serif;
+
+// --- إعدادات عامة للصفحة ---
+.checkout-page {
+  background-color: $background-color;
+  font-family: $font-family-base;
+  color: $text-color;
+  padding: 3rem 0;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  .page-title {
+    font-family: $font-family-headings;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: $primary-color;
+  }
+}
+
+// --- تصميم حاويات النجاح والخطأ ---
+.order-success-container, .empty-cart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  .order-success-content, .empty-cart-content {
+    background: $card-bg;
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+    max-width: 600px;
+    .success-icon, .warning-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+    .success-icon { color: $success-color; }
+    .warning-icon { color: $warning-color; }
+    h2 {
+      font-family: $font-family-headings;
+      color: $primary-color;
+      font-size: 2rem;
+    }
+    p { font-size: 1.1rem; margin-bottom: 2rem; }
+    .btn-primary {
+      background-color: $primary-color;
+      border-color: $primary-color;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+    }
+  }
+}
+
+// --- تصميم أقسام الفورم ---
+.checkout-section {
+  background: $card-bg;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+}
+
+.section-title {
+  font-family: $font-family-headings;
+  color: $primary-color;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid $secondary-color;
+  font-size: 1.5rem;
+}
+
+// --- تصميم حقول الإدخال ---
+.form-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.form-control {
+  border-radius: 8px;
+  border: 1px solid $border-color;
+  padding: 0.75rem 1rem;
+  &:focus {
+    border-color: $secondary-color;
+    box-shadow: 0 0 0 3px rgba($secondary-color, 0.2);
+  }
+  &:disabled {
+    background-color: #f8f9fa;
+  }
+}
+
+// --- تصميم خيارات الدفع ---
+.payment-option {
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+
+  &:has(.form-check-input:checked) {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+  &.disabled {
+    background-color: #f8f9fa;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  .form-check-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    cursor: pointer;
+    i {
+      font-size: 1.8rem;
+      color: $secondary-color;
+    }
+    span {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    small {
+      display: block;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  }
+  .form-check-input {
+    margin-top: 0.5rem;
+  }
+}
+
+// --- تصميم ملخص الطلب ---
+.order-summary {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 15px;
+  padding: 2rem;
+  position: sticky;
+  top: 90px;
+
+  .summary-items-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding-right: 0.5rem; // for scrollbar
+  }
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $border-color;
+    .item-thumbnail {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .item-info {
+      flex-grow: 1;
+      .item-name { font-weight: 600; }
+      .item-quantity { font-size: 0.9rem; color: #6c757d; }
+    }
+    .item-price { font-weight: 600; }
+  }
+
+  .summary-calculation {
+    padding: 1rem 0;
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      &.grand-total {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: $primary-color;
+        margin-top: 0.5rem;
+      }
+    }
+    hr {
+      border-top: 1px solid $border-color;
+      margin: 1rem 0;
+    }
+  }
+
+  .btn-primary {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    font-weight: 700;
+    padding: 0.8rem;
+    border-radius: 50px;
+  }
+}
+
+// --- التجاوب مع الشاشات ---
+@media (max-width: 991px) {
+  .order-summary {
+    position: static;
+    margin-top: 2rem;
+  }
+}
+
+
+
+.riyal-svg {
+  display: inline-block; // لجعلها تتدفق مع النص
+  width: 1em;            // جعل العرض متناسبًا مع حجم الخط
+  height: 1.1em;         // جعل الارتفاع متناسبًا مع حجم الخط
+  vertical-align: -0.1em; // لضبط محاذاة الأيقونة عموديًا مع النص
+  margin-right: 2px;     // إضافة مسافة صغيرة قبل الأيقونة
+}

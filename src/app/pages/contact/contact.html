@@ -1,0 +1,157 @@
+<div class="contact-page">
+  <div class="container">
+    <h1 class="page-title">اتصل بنا</h1>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- نموذج الاتصال -->
+        <div class="contact-form-section">
+          <h2>أرسل لنا رسالة</h2>
+
+          <!-- رسالة النجاح -->
+          <div class="alert alert-success" *ngIf="submitSuccess">
+            <i class="fas fa-check-circle"></i>
+            شكراً لك! تم استقبال رسالتك بنجاح. سنرد عليك قريباً.
+          </div>
+
+          <!-- رسالة الخطأ -->
+          <div class="alert alert-danger" *ngIf="submitError">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ submitError }}
+          </div>
+
+          <form (ngSubmit)="submitForm()">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="name" class="form-label">الاسم</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    [(ngModel)]="formData.name"
+                    name="name"
+                    required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="email" class="form-label">البريد الإلكتروني</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    [(ngModel)]="formData.email"
+                    name="email"
+                    required>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone" class="form-label">رقم الهاتف</label>
+              <input
+                type="tel"
+                id="phone"
+                class="form-control"
+                [(ngModel)]="formData.phone"
+                name="phone"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="subject" class="form-label">الموضوع</label>
+              <input
+                type="text"
+                id="subject"
+                class="form-control"
+                [(ngModel)]="formData.subject"
+                name="subject"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="message" class="form-label">الرسالة</label>
+              <textarea
+                id="message"
+                class="form-control"
+                rows="6"
+                [(ngModel)]="formData.message"
+                name="message"
+                required></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              [disabled]="isSubmitting">
+              <span *ngIf="!isSubmitting">
+                <i class="fas fa-paper-plane"></i> إرسال الرسالة
+              </span>
+              <span *ngIf="isSubmitting">
+                <i class="fas fa-spinner fa-spin"></i> جاري الإرسال...
+              </span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- معلومات الاتصال -->
+      <div class="col-lg-4">
+        <div class="contact-info-section">
+          <h2>معلومات التواصل</h2>
+
+          <div class="contact-info-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <h4>الهاتف</h4>
+              <a href="tel:+966501166755">+966 50 116 6755</a>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <h4>البريد الإلكتروني</h4>
+              <a href="mailto:info@nadeedalwashm.com">info@nadeedalwashm.com</a>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <h4>العنوان</h4>
+              <p>المملكة العربية السعودية / منطقة الرياض / مدينة شقراء</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <h4>ساعات العمل</h4>
+              <p>السبت - الخميس: 08:00 - 12:00</p>
+              <p>السبت - الخميس: 02:00 - 06:00</p>
+
+            </div>
+          </div>
+
+          <div class="social-links">
+            <h4>تابعنا</h4>
+            <div class="social-icons">
+              <a href="https://www.facebook.com/nadedalwashm/" target="_blank" class="social-icon">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="https://x.com/nadeedalwashm?lang=ar" target="_blank" class="social-icon">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="https://www.instagram.com/nadeedalwashm" target="_blank" class="social-icon">
+                <i class="fab fa-instagram"></i>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

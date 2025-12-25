@@ -1,0 +1,45 @@
+<div class="blog-page">
+  <div class="container">
+
+    <!-- عنوان الصفحة -->
+    <header class="page-header">
+      <h1 class="page-title">مدونة نضيد الوشم</h1>
+      <p class="page-subtitle">مقالات ونصائح حول عالم التمور وكل ما هو جديد</p>
+    </header>
+
+    <!-- حالة التحميل -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>جاري تحميل المقالات...</p>
+    </div>
+
+    <!-- شبكة المقالات -->
+    <div *ngIf="!isLoading" class="posts-grid">
+      <div class="post-card" *ngFor="let post of posts">
+        <a [routerLink]="['/blog', post.id]" class="post-link">
+
+          <!-- غلاف الصورة -->
+          <div class="post-image-wrapper">
+            <img [src]="getPostImage(post)" [alt]="post.title.rendered" class="post-image">
+          </div>
+
+          <!-- محتوى البطاقة -->
+          <div class="post-content">
+            <div class="post-meta">
+              <span class="post-date">{{ post.date | date:'longDate':'':'ar' }}</span>
+            </div>
+            <h3 class="post-title">{{ post.title.rendered }}</h3>
+            <div class="post-excerpt" [innerHTML]="post.excerpt.rendered.length > 150 ? (post.excerpt.rendered | slice:0:150) + '...' : post.excerpt.rendered"></div>
+            <div class="read-more-wrapper">
+              <span class="read-more">
+                اقرأ المزيد <i class="fas fa-long-arrow-alt-left"></i>
+              </span>
+            </div>
+          </div>
+
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

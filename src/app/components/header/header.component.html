@@ -1,0 +1,31 @@
+<div class="header">
+  <nav class="navbar">
+    <!-- أيقونة القائمة المنسدلة (Hamburger) للجوال -->
+    <div class="menu-toggle" (click)="toggleMenu()">
+      <i class="fas" [ngClass]="isMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+    </div>
+
+    <!-- شعار الموقع -->
+    <div class="navbar-logo">
+      <a routerLink="/"><img src="imegs/logo-nadeed.png" alt="شعار نضيد الوشم" class="logo-img"></a>
+    </div>
+
+    <!-- الروابط المدمجة في قائمة واحدة -->
+    <div class="nav-links" [class.active]="isMenuOpen">
+      <a routerLink="/" (click)="closeMenu()" class="nav-link" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">الرئيسية</a>
+      <a routerLink="/products" (click)="closeMenu()" class="nav-link" routerLinkActive="active-link">منتجاتنا</a>
+      <a routerLink="/blog" (click)="closeMenu()" class="nav-link" routerLinkActive="active-link">اخبار</a>
+      <a routerLink="/about" (click)="closeMenu()" class="nav-link" routerLinkActive="active-link">من نحن</a>
+      <a routerLink="/contact" (click)="closeMenu()" class="nav-link" routerLinkActive="active-link">اتصل بنا</a>
+    </div>
+
+    <!-- أيقونة سلة التسوق -->
+    <div class="navbar-cart">
+      <a class="nav-link cart-link" routerLink="/cart" (click)="closeMenu()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-text">السلة</span>
+        <span class="badge" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+      </a>
+    </div>
+  </nav>
+</div>

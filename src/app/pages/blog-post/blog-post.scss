@@ -1,0 +1,148 @@
+// --- استيراد المتغيرات لتوحيد التصميم ---
+$primary-color: #8a5a2b;
+$secondary-color: #c4a747;
+$background-color: #fdfaf5;
+$text-color: #4a3f35;
+$card-bg: #ffffff;
+$font-family-headings: 'Cairo', 'Segoe UI', sans-serif;
+$font-family-base: 'Cairo', 'Segoe UI', sans-serif;
+
+// --- إعدادات عامة للصفحة ---
+.blog-post-page {
+  background-color: $background-color;
+}
+
+.post-container {
+  max-width: 850px; // عرض مناسب للقراءة
+  margin: 0 auto; // توسيط الحاوية
+  padding: 3rem 1rem;
+}
+
+// --- تصميم عنوان المقال (Hero Header) ---
+.post-hero-header {
+  position: relative;
+  padding: 4rem 2rem;
+  border-radius: 15px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  text-align: center;
+  margin-bottom: -3rem; // خدعة تصميمية لجعل جسم المقال يتداخل قليلاً
+
+  .hero-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .post-title {
+    font-family: $font-family-headings;
+    font-size: 2.8rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+    margin-bottom: 1rem;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+// --- تصميم جسم المقال ---
+.post-body-wrapper {
+  position: relative;
+  z-index: 3;
+  background: $card-bg;
+  border-radius: 15px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.post-body {
+  line-height: 1.9;
+  font-size: 1.1rem;
+  color: $text-color;
+
+  // --- تنسيق المحتوى القادم من WordPress ---
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family-headings;
+    color: $primary-color;
+    margin: 2.5rem 0 1rem;
+  }
+  p {
+    margin-bottom: 1.5rem;
+  }
+  a {
+    color: $secondary-color;
+    text-decoration: none;
+    font-weight: 600;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  img, figure {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 2rem auto;
+    display: block;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  ul, ol {
+    padding-right: 20px;
+    margin-bottom: 1.5rem;
+    li { margin-bottom: 0.5rem; }
+  }
+  blockquote {
+    border-right: 4px solid $secondary-color;
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    background-color: $background-color;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    p { margin: 0; }
+  }
+}
+
+// --- حالات التحميل ---
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  .spinner {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 8px solid #761701;
+    border-top-color: $primary-color;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// --- التجاوب مع الشاشات ---
+@media (max-width: 767px) {
+  .post-container { padding: 1.5rem 0.5rem; }
+  .post-hero-header {
+    padding: 3rem 1rem;
+    .post-title { font-size: 2rem; }
+  }
+  .post-body-wrapper { padding: 2rem 1.5rem; }
+}

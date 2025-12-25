@@ -1,0 +1,56 @@
+// --- استيراد المتغيرات لتوحيد التصميم ---
+$primary-color: #8a5a2b;
+$secondary-color: #c4a747;
+$background-color: #fdfaf5;
+$text-color: #4a3f35;
+$header-height: 70px; // ارتفاع الهيدر الرئيسي
+$border-color:$primary-color;
+
+.categories-bar-container {
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  position: sticky; // خاصية الثبات
+  top: $header-height; // يلتصق أسفل الهيدر مباشرة
+  z-index: 999; // أقل من الهيدر الرئيسي
+  padding: 0.5rem 0;
+  border-bottom: 1px solid $border-color;
+  text-align: center;
+}
+
+.categories-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  overflow-x: auto; // للسماح بالتمرير الأفقي على الجوال
+  padding: 0.5rem 0;
+
+  // إخفاء شريط التمرير (Scrollbar)
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;  // IE and Edge
+  scrollbar-width: none;  // Firefox
+}
+
+.category-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  color: $text-color;
+  white-space: nowrap; // لمنع التفاف أسماء الأقسام
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+
+  // تصميم الرابط النشط
+  &.active {
+    background-color: $primary-color;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba($primary-color, 0.3);
+  }
+}

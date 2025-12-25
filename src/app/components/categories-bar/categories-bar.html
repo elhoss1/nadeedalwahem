@@ -1,0 +1,23 @@
+<div class="categories-bar-container" *ngIf="manualCategories.length > 0">
+  <div class="container">
+    <nav class="categories-nav">
+      <!-- رابط "كل المنتجات" -->
+      <a
+        class="category-link"
+        routerLink="/products"
+        [class.active]="activeUrl === '/products'">
+        الكل
+      </a>
+
+      <!-- قائمة الأقسام اليدوية مع الروابط المخصصة -->
+      <a
+        *ngFor="let category of manualCategories"
+        class="category-link"
+        [routerLink]="category.link"
+        [queryParams]="category.queryParams"
+        [class.active]="isActive(category)">
+        {{ category.name }}
+      </a>
+    </nav>
+  </div>
+</div>

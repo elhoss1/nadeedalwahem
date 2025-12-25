@@ -1,0 +1,22 @@
+
+  <!-- بطاقة المنتج -->
+    <!-- الجزء العلوي من البطاقة (الصورة) -->
+    <div class="product-image-container">
+      <img [src]="product.images" class="product-image" [alt]="product.name">
+    </div>
+
+    <!-- محتوى البطاقة -->
+    <div class="product-content">
+      <h5 class="product-name">{{ product.name }}</h5>
+      <p class="product-price">{{ product.price | currency:'SAR' }}</p>
+
+      <!-- أزرار الإجراءات -->
+      <div class="product-actions">
+        <button class="btn btn-primary icon-btn" (click)="addToCart()" title="أضف للسلة">
+          <i class="fas fa-cart-plus"></i>
+        </button>
+        <a [routerLink]="['/products', product.id]" class="btn btn-secondary">
+          التفاصيل
+        </a>
+      </div>
+    </div>

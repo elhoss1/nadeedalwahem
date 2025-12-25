@@ -1,0 +1,305 @@
+// --- متغيرات الألوان والهوية البصرية (للتناسق مع باقي الموقع) ---
+$primary-color: #8a5a2b;   // بني غامق
+$secondary-color: #c4a747; // ذهبي
+$background-color: #fdfaf5; // بيج فاتح
+$text-color: #4a3f35;      // بني داكن للنصوص
+$card-bg: #ffffff;         // أبيض لخلفية البطاقات
+$border-color: #e0d7c7;
+$success-color: #28a745;
+$danger-color: #dc3545;
+
+// --- الخطوط ---
+$font-family-headings: 'Cairo', 'Segoe UI', sans-serif;
+$font-family-base: 'Cairo', 'Segoe UI', sans-serif;
+
+// --- إعدادات عامة للصفحة ---
+.cart-page {
+  background-color: $background-color;
+  font-family: $font-family-base;
+  color: $text-color;
+  padding: 3rem 0;
+  min-height: calc(100vh - 150px);
+}
+
+// --- عنوان الصفحة ---
+.page-title {
+  text-align: center;
+  color: $primary-color;
+  font-family: $font-family-headings;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  font-size: 2.8rem;
+}
+
+// --- قسم عناصر السلة ---
+.cart-items-section {
+  background: $card-bg;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+
+  // --- حالة السلة الفارغة ---
+  .empty-cart {
+    text-align: center;
+    padding: 4rem 2rem;
+    i {
+      font-size: 5rem;
+      color: $secondary-color;
+      opacity: 0.7;
+      margin-bottom: 1.5rem;
+    }
+    h3 {
+      font-family: $font-family-headings;
+      color: $primary-color;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    .btn-primary {
+      background-color: $primary-color;
+      border-color: $primary-color;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      &:hover {
+        background-color: darken($primary-color, 10%);
+        border-color: darken($primary-color, 10%);
+      }
+    }
+  }
+
+  // --- تصميم عناصر السلة ---
+  .cart-item {
+    display: grid;
+    grid-template-columns: 100px 1fr auto auto auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid $border-color;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .item-details {
+      .item-name {
+        font-family: $font-family-headings;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: $primary-color;
+        margin-bottom: 0.25rem;
+      }
+      .item-price {
+        color: $secondary-color;
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 0;
+      }
+    }
+
+    .item-quantity {
+      display: flex;
+      align-items: center;
+      border: 1px solid $border-color;
+      border-radius: 50px;
+      overflow: hidden;
+
+      .quantity-input {
+        width: 50px;
+        text-align: center;
+        border: none;
+        background: transparent;
+        font-weight: 600;
+        color: $text-color;
+        &:focus { outline: none; }
+        &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+      }
+
+      .btn {
+        background: transparent;
+        border: none;
+        color: $primary-color;
+        padding: 0.5rem 0.75rem;
+        &:hover { background-color: rgba($primary-color, 0.1); }
+        &:disabled { color: $border-color; cursor: not-allowed; }
+      }
+    }
+
+    .item-total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: $primary-color;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: none;
+      color: $danger-color;
+      font-size: 1.2rem;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      &:hover { opacity: 1; }
+    }
+  }
+
+  // --- أزرار التحكم بالسلة ---
+  .cart-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid $border-color;
+
+    .btn {
+      font-weight: 600;
+      border-radius: 50px;
+      padding: 0.6rem 1.5rem;
+    }
+    .btn-outline-danger {
+      border-color: $danger-color;
+      color: $danger-color;
+      &:hover { background-color: $danger-color; color: #fff; }
+    }
+    .btn-outline-primary {
+      border-color: $primary-color;
+      color: $primary-color;
+      &:hover { background-color: $primary-color; color: #fff; }
+    }
+  }
+}
+
+// --- ملخص الطلب ---
+.order-summary {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 15px;
+  padding: 2rem;
+  position: sticky;
+  top: 90px; // مسافة من الهيدر
+
+  h3 {
+    font-family: $font-family-headings;
+    color: $primary-color;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    color: $text-color;
+    border-bottom: 1px solid $border-color;
+
+    span:last-child {
+      font-weight: 600;
+      &.free { color: $success-color; }
+    }
+  }
+
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem 0;
+    margin: 1rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: $primary-color;
+  }
+
+  .btn-primary {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    font-weight: 700;
+    padding: 0.8rem;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      border-color: darken($primary-color, 10%);
+    }
+  }
+
+  .shipping-info {
+    text-align: center;
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+
+      &.warning { color: #856404; background-color: #fff3cd; }
+      &.success { color: #155724; background-color: #d4edda; }
+    }
+  }
+}
+
+// ===========================================
+//  قسم التجاوب مع شاشات الجوال (Responsive)
+// ===========================================
+@media (max-width: 991px) {
+  .order-summary {
+    position: static;
+    margin-top: 2rem;
+  }
+  .cart-item {
+    grid-template-columns: 80px 1fr auto; // تبسيط الشبكة
+    .item-total { display: none; } // إخفاء الإجمالي الفرعي للعنصر لتوفير مساحة
+  }
+}
+
+@media (max-width: 767px) {
+  .cart-page { padding: 1.5rem 0; }
+  .page-title { font-size: 2rem; margin-bottom: 2rem; }
+  .cart-items-section { padding: 1rem; }
+
+  .cart-item {
+    grid-template-columns: 60px 1fr; // عمودان فقط: صورة وتفاصيل
+    position: relative;
+    padding-bottom: 4rem; // مساحة للكمية والحذف في الأسفل
+
+    .item-image { width: 60px; height: 60px; }
+    .item-details { grid-column: 2 / 3; }
+
+    .item-quantity {
+      grid-column: 1 / 3; // تمتد على عرض البطاقة
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .btn-danger {
+      position: absolute;
+      top: 1rem;
+      left: 0;
+    }
+  }
+  .cart-actions { flex-direction: column; }
+}
+
+
+// في نهاية ملف الـ SCSS
+
+.riyal-svg {
+  display: inline-block; // لجعلها تتدفق مع النص
+  width: 1em;            // جعل العرض متناسبًا مع حجم الخط
+  height: 1.1em;         // جعل الارتفاع متناسبًا مع حجم الخط
+  vertical-align: -0.1em; // لضبط محاذاة الأيقونة عموديًا مع النص
+  margin-right: 2px;     // إضافة مسافة صغيرة قبل الأيقونة
+}

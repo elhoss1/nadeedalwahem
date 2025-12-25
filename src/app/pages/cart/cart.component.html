@@ -1,0 +1,161 @@
+<div class="cart-page">
+  <div class="container">
+    <h1 class="page-title">سلة التسوق</h1>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- عناصر السلة -->
+        <div class="cart-items-section">
+          <div *ngIf="cartItems.length === 0" class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>السلة فارغة</h3>
+            <p>لم تضف أي منتجات إلى السلة بعد.</p>
+            <a routerLink="/products" class="btn btn-primary">
+              تصفح المنتجات
+            </a>
+          </div>
+
+          <div *ngIf="cartItems.length > 0" class="cart-items">
+            <div class="cart-item" *ngFor="let item of cartItems">
+              <img [src]="item.image" [alt]="item.name" class="item-image">
+
+              <div class="item-details">
+                <h4 class="item-name">{{ item.name }}</h4>
+                <p class="item-price">{{ item.price }}
+                <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                </svg></p>
+              </div>
+
+              <div class="item-quantity">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="updateQuantity(item.id, item.quantity - 1)"
+                  [disabled]="item.quantity <= 1">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input
+                  type="number"
+                  class="quantity-input"
+                  [(ngModel)]="item.quantity"
+                  (change)="updateQuantity(item.id, item.quantity)"
+                  min="1">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="updateQuantity(item.id, item.quantity + 1)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+
+              <div class="item-total">
+                {{ item.price * item.quantity }}
+                <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                </svg>
+              </div>
+
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="removeItem(item.id)"
+                title="إزالة">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+
+            <div class="cart-actions">
+              <button
+                class="btn btn-outline-danger"
+                (click)="clearCart()">
+                <i class="fas fa-trash"></i> مسح السلة
+              </button>
+              <a routerLink="/products" class="btn btn-outline-primary">
+                متابعة التسوق
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ملخص الطلب -->
+      <div class="col-lg-4">
+        <div class="order-summary" *ngIf="cartItems.length > 0">
+          <h3>ملخص الطلب</h3>
+
+          <div class="summary-item">
+            <span>المجموع الفرعي:</span>
+            <span>{{ total }}
+              <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                </svg>
+            </span>
+          </div>
+
+          <div class="summary-item">
+            <span>الضريبة (15%):</span>
+            <span>{{ getTaxAmount() | number:'1.2-2' }}
+              <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                </svg>
+            </span>
+          </div>
+
+          <div class="summary-item">
+            <span>الشحن:</span>
+            <span [class.free]="getShippingCost() === 0">
+
+            <!-- في حالة الشحن المجاني -->
+            <ng-container *ngIf="getShippingCost() === 0; else shippingCostBlock">
+              مجاني
+            </ng-container>
+
+            <!-- في حالة وجود تكلفة للشحن -->
+            <ng-template #shippingCostBlock>
+              {{ getShippingCost() }}
+              <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+              </svg>
+            </ng-template>
+
+</span>
+
+          </div>
+
+          <div class="summary-total">
+            <span>الإجمالي:</span>
+            <span>{{ getFinalTotal() | number:'1.2-2' }}
+              <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                </svg>
+            </span>
+          </div>
+
+          <button routerLink="/checkout" class="btn btn-primary btn-lg w-100">
+            <i class="fas fa-credit-card"></i> الدفع الآن
+          </button>
+
+          <div class="shipping-info">
+            <p *ngIf="total <= 500" class="warning">
+              <i class="fas fa-info-circle"></i>
+              أضف {{ 500 - total | number:'1.2-2' }}
+              <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+                <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                </svg>
+              أخرى للحصول على شحن مجاني
+            </p>
+            <p *ngIf="total > 500" class="success">
+              <i class="fas fa-check-circle"></i>
+              أنت مؤهل للشحن المجاني!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

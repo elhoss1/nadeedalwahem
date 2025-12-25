@@ -1,0 +1,120 @@
+<div class="home-page">
+  <!-- ======================= -->
+  <!--    قسم البانر الرئيسي    -->
+  <!-- ======================= -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1>مرحباً بك في نضيد الوشم</h1>
+        <p>من تمور المشرق الفاخرة وشتلاتها المميزة، نرحب بك في عالم التمور الاستثنائية، بنكهات لا تُنسى، تُنتج من أفضل أنواع التمور بعناية فائقة.</p>
+        <a [routerLink]="['/products']" class="btn btn-secondary btn-lg">تصفح منتجاتنا</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= -->
+  <!--      قسم الفئات        -->
+  <!-- ======================= -->
+ <section class="categories-section container">
+  <h2 class="section-title">الاقسام الرئيسية</h2>
+  <div class="categories-grid">
+
+    <a class="category-card" routerLink="/Rawdates">
+      <img src="imegs/تمور خام.png" alt="تمور خام">
+      <h3>تمور خام</h3>
+    </a>
+
+    <a class="category-card" routerLink="/maknoozautomaticdates">
+      <img src="imegs/تمور مكنوز الي.png" alt="تمور مكنوز الي">
+      <h3>تمور مكنوز الي</h3>
+    </a>
+
+    <a class="category-card" routerLink="/Surveydatesprose">
+      <img src="imegs/تمور تعبئة نثري.png" alt="تمور تعبئة نثري">
+      <h3>تمور تعبئة نثري</h3>
+    </a>
+
+    <a class="category-card" routerLink="/Maamoul">
+      <img src="imegs/معمول.png" alt="المعمول">
+      <h3>المعمول</h3>
+    </a>
+
+  </div>
+</section>
+
+
+
+  <!-- ======================= -->
+  <!--   قسم المنتجات المميزة   -->
+  <!-- ======================= -->
+  <section class="featured-products-section container">
+    <h2 class="section-title">منتجاتنا المميزة</h2>
+
+    <!-- حالة التحميل -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>جاري تحميل المنتجات...</p>
+    </div>
+
+    <!-- حالة وجود منتجات -->
+    <div *ngIf="!isLoading && featuredProducts.length > 0" class="products-grid">
+      <div class="product-card" *ngFor="let product of featuredProducts">
+        <div class="product-image-wrapper">
+          <img [src]="getProductImage(product)" class="product-image" [alt]="product.name">
+          <div class="product-overlay">
+            <a [routerLink]="['/products', product.id]" class="overlay-action details-btn">
+              <i class="fas fa-eye"></i>
+              <span>عرض التفاصيل</span>
+            </a>
+            <button class="overlay-action add-to-cart-btn" (click)="addToCart(product)">
+              <i class="fas fa-shopping-basket"></i>
+              <span>أضف للسلة</span>
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <div class="product-price"> {{product.price}}
+          <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="18" style="display:inline-block;vertical-align:-0.125em">
+          <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+          <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+          </svg>
+          </div>
+        </div>
+        <button class="mobile-add-to-cart" (click)="addToCart(product)">
+          <i class="fas fa-cart-plus"></i> أضف للسلة
+        </button>
+      </div>
+    </div>
+
+    <!-- حالة عدم وجود منتجات -->
+    <div *ngIf="!isLoading && featuredProducts.length === 0" class="empty-state">
+      <p>لا توجد منتجات مميزة حالياً.</p>
+    </div>
+  </section>
+
+  <!-- ======================= -->
+  <!--      قسم المميزات       -->
+  <!-- ======================= -->
+  <section class="features-section py-5">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-4 feature-item">
+          <i class="fas fa-leaf fa-3x mb-3"></i>
+          <h3>جودة طبيعية</h3>
+          <p>أجود أنواع التمور الطبيعية والمختارة بعناية فائقة.</p>
+        </div>
+        <div class="col-md-4 feature-item">
+          <i class="fas fa-shipping-fast fa-3x mb-3"></i>
+          <h3>توصيل سريع</h3>
+          <p>خدمة توصيل سريعة وموثوقة لجميع أنحاء المملكة.</p>
+        </div>
+        <div class="col-md-4 feature-item">
+          <i class="fas fa-award fa-3x mb-3"></i>
+          <h3>ضمان الرضا</h3>
+          <p>نضمن لك أعلى مستويات الجودة أو استرداد أموالك.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

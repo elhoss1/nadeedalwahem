@@ -1,0 +1,121 @@
+// --- متغيرات الألوان والهوية البصرية لمتجر التمور ---
+$primary-color: #8a5a2b;
+$secondary-color: #c4a747;
+$background-color: #fdfaf5;
+$text-color: #4a3f35;
+$card-bg: #ffffff;
+$border-color: #e0d7c7;
+
+// --- الخطوط ---
+$font-family-headings: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+// --- إعدادات عامة للصفحة ---
+.home-page {
+  background-color: $background-color;
+  font-family: $font-family-base;
+  color: $text-color;
+}
+
+// --- قسم الـ Hero ---
+.hero-section {
+  // ... (هذا القسم سليم، لا تغييرات)
+  background: url('/imegs/slaid.png') no-repeat center center;
+  background-size: cover;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  color: #fff;
+  &::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); }
+  .hero-content {
+    position: relative; z-index: 10; max-width: 600px; text-align: right;
+    h1 { font-family: $font-family-headings; font-size: 3rem; font-weight: 700; color: $secondary-color; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+    p { font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.8; }
+    .btn-secondary { background-color: $secondary-color; border-color: $secondary-color; color: $primary-color; font-weight: 700; padding: 0.75rem 1.5rem; &:hover { background-color: darken($secondary-color, 10%); border-color: darken($secondary-color, 10%); } }
+  }
+}
+
+// --- عنوان الأقسام الموحد ---
+.section-title {
+  // ... (هذا القسم سليم، لا تغييرات)
+  text-align: center; color: $primary-color; font-family: $font-family-headings; font-weight: 700; margin: 4rem 0 2.5rem; font-size: 2.5rem; position: relative;
+  &::after { content: ''; display: block; width: 80px; height: 3px; background-color: $secondary-color; margin: 10px auto 0; }
+}
+
+// ======================================================
+//  قسم الفئات (النسخة الصحيحة والموحدة)
+// ======================================================
+.categories-section {
+  padding-bottom: 2rem;
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .category-card {
+    height: auto;
+    background-color: $card-bg;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: $text-color;
+    text-align: center;
+    // تم حذف overflow: hidden; من هنا لأنه كان يسبب المشكلة
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    }
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      // جعل الحواف العلوية للصورة دائرية لتتناسب مع البطاقة
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    h3 {
+      font-family: $font-family-headings;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 1rem;
+      margin: 0;
+    }
+  }
+}
+
+// --- قسم المنتجات المميزة ---
+.featured-products-section {
+  // ... (هذا القسم سليم، لا تغييرات)
+  padding-bottom: 3rem;
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; @media (min-width: 768px) { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.8rem; } }
+  .product-card { background-color: $card-bg; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07); transition: transform 0.3s ease, box-shadow 0.3s ease; border: none; display: flex; flex-direction: column; @media (hover: hover) { &:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1); .product-image-wrapper .product-overlay { opacity: 1; } .product-image-wrapper .product-image { transform: scale(1.1); } } } .product-image-wrapper { position: relative; overflow: hidden; .product-image { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.4s ease; } .product-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s ease; .overlay-action { display: flex; align-items: center; gap: 0.5rem; background-color: #fff; color: $primary-color; padding: 0.6rem 1.2rem; border-radius: 50px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; &:hover { background-color: $secondary-color; color: #fff; } } } } .product-info { padding: 0.75rem; text-align: center; display: flex; flex-direction: column; flex-grow: 1; .product-name { font-family: $font-family-headings; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: $text-color; flex-grow: 1; } .product-price { font-size: 1.1rem; font-weight: 700; color: $secondary-color; margin-bottom: 0.75rem; } } .mobile-add-to-cart { display: none; width: 100%; background-color: $primary-color; color: #fff; border: none; padding: 0.6rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: background-color 0.2s ease; &:hover { background-color: darken($primary-color, 10%); } } }
+}
+
+// --- قسم المميزات ---
+.features-section {
+  // ... (هذا القسم سليم، لا تغييرات)
+  background-color: $primary-color; color: #fff;
+  .feature-item { padding: 20px; text-align: center; i { color: $secondary-color; font-size: 2.5rem; } h3 { font-weight: 700; margin-top: 10px; } }
+}
+
+// --- حالات التحميل والفراغ ---
+.loading-state, .empty-state {
+  // ... (هذا القسم سليم، لا تغييرات)
+  display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 300px; color: $text-color;
+}
+.spinner { width: 56px; height: 56px; border-radius: 50%; border: 8px solid $border-color; border-top-color: $primary-color; animation: spin 1s linear infinite; margin-bottom: 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// --- تعديلات عامة للشاشات الصغيرة ---
+@media (max-width: 767px) {
+  // ... (هذا القسم سليم، لا تغييرات)
+  .hero-section { height: 400px; .hero-content h1 { font-size: 2.2rem; } .hero-content p { font-size: 1rem; } }
+  .section-title { font-size: 2rem; margin: 3rem 0 2rem; }
+  .categories-section .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .featured-products-section .product-card { .product-overlay { display: none; } .product-info { padding-bottom: 0; } .mobile-add-to-cart { display: block; } }
+}
+
+// لا حاجة للقاعدة المكررة في الأسفل، تم حذفها

@@ -1,0 +1,61 @@
+.main-content {  min-height: calc(100vh - 200px);  display: flex;  flex-direction: column;}
+// --- متغيرات لتسهيل التعديل ---
+$header-height: 70px; // هذا هو ارتفاع الهيدر الذي صممناه سابقًا
+
+// --- تنسيق المكون الرئيسي للتطبيق ---
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; // لجعل الفوتر يلتصق بأسفل الصفحة في الصفحات القصيرة
+}
+
+// --- تنسيق المحتوى الرئيسي ---
+.main-content {
+  flex: 1; // يجعل المحتوى يملأ المساحة المتاحة بين الهيدر والفوتر
+  padding-top: $header-height; // الأهم: إضافة حشو علوي بنفس ارتفاع الهيدر
+}
+
+
+$whatsapp-color: #25D366;
+$primary-color: #8a5a2b; // اللون الأساسي لمتجرك
+
+// --- تصميم أيقونة الواتساب الثابتة ---
+.whatsapp-float {
+  position: fixed; // أهم خاصية لجعلها ثابتة
+  bottom: 25px;    // المسافة من الأسفل
+  left: 25px;      // المسافة من اليسار (يمكنك تغييرها إلى right: 25px; لوضعها على اليمين)
+  z-index: 1000;   // لضمان بقائها فوق كل العناصر الأخرى
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 60px;
+  height: 60px;
+  background-color: $whatsapp-color;
+  color: #FFF;
+  border-radius: 50%; // لجعلها دائرية
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); // ظل ناعم
+
+  font-size: 2rem; // حجم أيقونة الواتساب
+  text-decoration: none;
+
+  transition: transform 0.3s ease, background-color 0.3s ease;
+
+  // تأثير حركة عند التمرير
+  &:hover {
+    transform: scale(1.1); // تكبير الأيقونة قليلاً
+    background-color: darken($whatsapp-color, 10%);
+  }
+}
+
+// --- تعديلات للشاشات الصغيرة (الجوال) ---
+@media (max-width: 767px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    bottom: 20px;
+    left: 20px; // أو right: 20px;
+  }
+}

@@ -1,0 +1,203 @@
+// --- متغيرات الألوان والخطوط (للتناسق مع باقي الموقع) ---
+$primary-color: #8a5a2b;   // بني غامق
+$secondary-color: #c4a747; // ذهبي
+$background-color: #fdfaf5; // بيج فاتح
+$text-color: #4a3f35;      // بني داكن للنصوص
+$font-family-base: 'Cairo', 'Segoe UI', sans-serif;
+
+$border-color:#4a3f35;
+// --- تصميم الهيدر الرئيسي ---
+.header {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  position: fixed; // أو sticky، لكن fixed أفضل لضمان الثبات دائمًا
+  top: 0;
+  left: 0; // مهم لضمان امتداده على كامل العرض
+  right: 0; // مهم لضمان امتداده على كامل العرض
+  z-index: 1000; // لضمان بقائه فوق كل العناصر
+  width: 100%;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  height: 70px;
+}
+
+// --- تصميم الشعار ---
+.navbar-logo {
+  .logo-img {
+    height: 50px; // تعديل حجم الشعار حسب الحاجة
+    width: auto;
+  }
+}
+
+// --- تصميم روابط القائمة ---
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  .nav-link {
+    font-family: $font-family-base;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-color;
+    text-decoration: none;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+
+    // خط سفلي يظهر عند التمرير
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background-color: $secondary-color;
+      transition: width 0.3s ease;
+    }
+
+    &:hover,
+    &.active-link { // تمييز الرابط النشط
+      color: $primary-color;
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// --- تصميم أيقونة السلة ---
+.navbar-cart {
+  .cart-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $text-color;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    padding: 0.5rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: $primary-color;
+      color: #fff;
+      border-color: $primary-color;
+    }
+
+    .fa-shopping-cart {
+      font-size: 1.2rem;
+    }
+
+    .cart-text {
+      // إخفاء كلمة "السلة" على الشاشات المتوسطة لتوفير مساحة
+      @media (max-width: 992px) {
+        display: none;
+      }
+    }
+
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: $secondary-color;
+      color: $primary-color;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      border: 2px solid #fff;
+    }
+  }
+}
+
+// --- أيقونة القائمة المنسدلة (للجوال) ---
+.menu-toggle {
+  display: none; // إخفاؤها على الشاشات الكبيرة
+  font-size: 1.5rem;
+  color: $primary-color;
+  cursor: pointer;
+}
+
+
+// ===========================================
+//  قسم التجاوب مع شاشات الجوال (Responsive)
+// ===========================================
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 1.5rem; // زيادة الحشو الجانبي قليلاً
+  }
+
+  // إظهار أيقونة القائمة وإخفاء الروابط
+  .menu-toggle {
+    display: block;
+    order: 1; // ترتيب الأيقونة أولاً
+  }
+
+  .navbar-logo {
+    order: 2; // الشعار في المنتصف
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .navbar-cart {
+    order: 3; // السلة في النهاية
+  }
+
+  // تصميم القائمة المنسدلة
+  .nav-links {
+    position: absolute;
+    top: 70px; // تحت الهيدر مباشرة
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+
+    // إخفاء القائمة وتصغيرها
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+
+    // إظهار القائمة عند الضغط
+    &.active {
+      max-height: 500px; // ارتفاع كافٍ لإظهار كل الروابط
+    }
+
+    .nav-link {
+      width: 100%;
+      text-align: center;
+      padding: 1.2rem 1rem;
+      border-bottom: 1px solid $border-color;
+
+      &::after {
+        // إزالة الخط السفلي المتحرك في وضع الجوال
+        display: none;
+      }
+
+      &:hover,
+      &.active-link {
+        background-color: $background-color;
+        color: $primary-color;
+      }
+    }
+  }
+}
