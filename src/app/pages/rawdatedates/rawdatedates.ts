@@ -22,7 +22,7 @@ export class Rawdatedates implements OnInit{
   sortBy: string = 'date';
 
   // المعرف الثابت للفئة لهذه الصفحة
-  private readonly PAGE_CATEGORY_ID = 79;
+  private readonly PAGE_CATEGORY_ID = 34;
 
   constructor(
     private woocommerceService: WoocommerceService,
