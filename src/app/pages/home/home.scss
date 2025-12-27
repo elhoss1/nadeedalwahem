@@ -1,25 +1,32 @@
 // --- متغيرات الألوان والهوية البصرية لمتجر التمور ---
 $primary-color: #8a5a2b;
-$secondary-color: #c4a747;
+$secondary-color: #baaa74;
 $background-color: #fdfaf5;
 $text-color: #4a3f35;
 $card-bg: #ffffff;
 $border-color: #e0d7c7;
+$section-odd-bg: #f7f2e9; // لون خلفية الأقسام الفردية
 
 // --- الخطوط ---
-$font-family-headings: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-$font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-family-headings: 'Cairo', 'Segoe UI', sans-serif;
+$font-family-base: 'Cairo', 'Segoe UI', sans-serif;
 
-// --- إعدادات عامة للصفحة ---
+// ======================================================
+//  إعدادات عامة للصفحة
+// ======================================================
 .home-page {
   background-color: $background-color;
   font-family: $font-family-base;
   color: $text-color;
 }
 
-// --- قسم الـ Hero ---
+
+
+
+// ======================================================
+//  قسم البانر الرئيسي (Hero)
+// ======================================================
 .hero-section {
-  // ... (هذا القسم سليم، لا تغييرات)
   background: url('/imegs/slaid.png') no-repeat center center;
   background-size: cover;
   height: 500px;
@@ -36,25 +43,51 @@ $font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
-// --- عنوان الأقسام الموحد ---
-.section-title {
-  // ... (هذا القسم سليم، لا تغييرات)
-  text-align: center; color: $primary-color; font-family: $font-family-headings; font-weight: 700; margin: 4rem 0 2.5rem; font-size: 2.5rem; position: relative;
-  &::after { content: ''; display: block; width: 80px; height: 3px; background-color: $secondary-color; margin: 10px auto 0; }
+// ======================================================
+//  تصميم جديد وموحد لعناوين الأقسام
+// ======================================================
+.section-header-alt {
+  background-color: #fdfaf5;
+  text-align: center;
+  padding: 4rem 0;
+  .section-title-alt {
+    font-family: $font-family-headings;
+    background-color: #fdfaf5;
+    font-size: 2.5rem;
+    color: $primary-color;
+    margin-bottom: 0.75rem;
+    position: relative;
+    display: inline-block;
+    &::after {
+      content: '';
+      display: block;
+      width: 70%;
+      height: 3px;
+      background-color: $secondary-color;
+      margin: 10px auto 0;
+    }
+  }
+  .section-subtitle-alt {
+    font-size: 1.1rem;
+    color: lighten($text-color, 20%);
+    max-width: 500px;
+    margin: 0 auto;
+  }
 }
 
 // ======================================================
-//  قسم الفئات (النسخة الصحيحة والموحدة)
+//  قسم الفئات
 // ======================================================
-.categories-section {
-  padding-bottom: 2rem;
+.categories-section-wrapper {
+  background-color: $card-bg;
+  padding-bottom: 4rem;
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.5rem;
   }
   .category-card {
-    height: auto;
+    height: auto  ;
     background-color: $card-bg;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
@@ -62,8 +95,7 @@ $font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-decoration: none;
     color: $text-color;
     text-align: center;
-    // تم حذف overflow: hidden; من هنا لأنه كان يسبب المشكلة
-
+    overflow: hidden;
     &:hover {
       transform: translateY(-8px);
       box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
@@ -72,9 +104,6 @@ $font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       width: 100%;
       height: 200px;
       object-fit: cover;
-      // جعل الحواف العلوية للصورة دائرية لتتناسب مع البطاقة
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
     }
     h3 {
       font-family: $font-family-headings;
@@ -86,36 +115,247 @@ $font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
-// --- قسم المنتجات المميزة ---
-.featured-products-section {
-  // ... (هذا القسم سليم، لا تغييرات)
-  padding-bottom: 3rem;
-  .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; @media (min-width: 768px) { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.8rem; } }
-  .product-card { background-color: $card-bg; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07); transition: transform 0.3s ease, box-shadow 0.3s ease; border: none; display: flex; flex-direction: column; @media (hover: hover) { &:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1); .product-image-wrapper .product-overlay { opacity: 1; } .product-image-wrapper .product-image { transform: scale(1.1); } } } .product-image-wrapper { position: relative; overflow: hidden; .product-image { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.4s ease; } .product-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s ease; .overlay-action { display: flex; align-items: center; gap: 0.5rem; background-color: #fff; color: $primary-color; padding: 0.6rem 1.2rem; border-radius: 50px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; &:hover { background-color: $secondary-color; color: #fff; } } } } .product-info { padding: 0.75rem; text-align: center; display: flex; flex-direction: column; flex-grow: 1; .product-name { font-family: $font-family-headings; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: $text-color; flex-grow: 1; } .product-price { font-size: 1.1rem; font-weight: 700; color: $secondary-color; margin-bottom: 0.75rem; } } .mobile-add-to-cart { display: none; width: 100%; background-color: $primary-color; color: #fff; border: none; padding: 0.6rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: background-color 0.2s ease; &:hover { background-color: darken($primary-color, 10%); } } }
+// ======================================================
+//  أقسام السلايدر المتعددة
+// ======================================================
+.category-slider-section {
+  text-align: center;
+  padding: 4rem 0;
+  &.odd-section {
+    background-color: $section-odd-bg;
+  }
+  .section-header {
+    text-align: center;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .section-title {
+    text-align: center;
+    margin: 0;
+    font-size: 2.2rem;
+    font-family: $font-family-headings;
+    color: $primary-color;
+  }
+  .view-all-link {
+    color: $secondary-color;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s ease;
+    i { transition: transform 0.3s ease; }
+    &:hover {
+      color: darken($secondary-color, 10%);
+      i { transform: translateX(-5px); }
+    }
+  }
 }
 
-// --- قسم المميزات ---
-.features-section {
-  // ... (هذا القسم سليم، لا تغييرات)
-  background-color: $primary-color; color: #fff;
-  .feature-item { padding: 20px; text-align: center; i { color: $secondary-color; font-size: 2.5rem; } h3 { font-weight: 700; margin-top: 10px; } }
+// ======================================================
+//  تصميم موحد لبطاقة المنتج (داخل السلايدر أو الشبكة)
+// ======================================================
+.product-card {
+  background-color: $card-bg;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+      .product-image-wrapper .product-overlay { opacity: 1; }
+      .product-image-wrapper .product-image { transform: scale(1.1); }
+    }
+  }
+  .product-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    .product-image { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.4s ease; }
+    .product-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex; justify-content: center; align-items: center; gap: 0.75rem;
+      opacity: 0; transition: opacity 0.4s ease;
+      .overlay-action {
+        display: flex; align-items: center; justify-content: center;
+        width: 45px; height: 45px;
+        background-color: #fff; color: $primary-color;
+        border-radius: 50%; text-decoration: none; border: none; cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        &:hover { background-color: $secondary-color; color: #fff; }
+      }
+    }
+  }
+  .product-info {
+    padding: 1rem; text-align: center; display: flex; flex-direction: column; flex-grow: 1;
+    .product-name { font-family: $font-family-headings; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: $text-color; flex-grow: 1; }
+    .product-price { font-size: 1.1rem; font-weight: 700; color: $secondary-color; }
+  }
+  .mobile-add-to-cart {
+    display: none; // يظهر فقط في الشاشات الصغيرة
+    width: 100%; background-color: $primary-color; color: #fff; border: none;
+    padding: 0.75rem; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+    transition: background-color 0.2s ease;
+    &:hover { background-color: darken($primary-color, 10%); }
+  }
+  .riyal-svg { display: inline-block; width: 1em; height: 1.1em; vertical-align: -0.1em; margin-right: 2px; }
 }
 
-// --- حالات التحميل والفراغ ---
-.loading-state, .empty-state {
-  // ... (هذا القسم سليم، لا تغييرات)
-  display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 300px; color: $text-color;
+// ======================================================
+//  تخصيص Swiper
+// ======================================================
+swiper-container {
+  width: 100%;
+  padding: 1rem 0 3rem;
+  --swiper-navigation-color: #{$primary-color};
+  --swiper-navigation-size: 30px;
+  --swiper-pagination-color: #{$primary-color};
+  --swiper-pagination-bullet-inactive-color: #{$border-color};
+  --swiper-pagination-bullet-inactive-opacity: 1;
+  --swiper-pagination-bullet-size: 10px;
 }
+swiper-slide { height: auto; }
+
+// ======================================================
+//  قسم المميزات
+// ======================================================
+.features-section-wrapper {
+  background-color: $primary-color;
+  color: #fff;
+  padding: 4rem 0;
+  .feature-item {
+    i { color: $secondary-color; font-size: 2.5rem; }
+    h3 { font-weight: 700; margin-top: 1rem; }
+  }
+}
+
+// ======================================================
+//  حالات التحميل والتجاوب مع الشاشات
+// ======================================================
+.loading-state { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 300px; color: $text-color; }
 .spinner { width: 56px; height: 56px; border-radius: 50%; border: 8px solid $border-color; border-top-color: $primary-color; animation: spin 1s linear infinite; margin-bottom: 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-// --- تعديلات عامة للشاشات الصغيرة ---
 @media (max-width: 767px) {
-  // ... (هذا القسم سليم، لا تغييرات)
   .hero-section { height: 400px; .hero-content h1 { font-size: 2.2rem; } .hero-content p { font-size: 1rem; } }
-  .section-title { font-size: 2rem; margin: 3rem 0 2rem; }
-  .categories-section .categories-grid { grid-template-columns: repeat(2, 1fr); }
-  .featured-products-section .product-card { .product-overlay { display: none; } .product-info { padding-bottom: 0; } .mobile-add-to-cart { display: block; } }
+  .section-header-alt { padding: 3rem 0; .section-title-alt { font-size: 2rem; } }
+  .categories-section-wrapper .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .category-slider-section { padding: 3rem 0; .section-header { flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; } .section-title { font-size: 1.8rem; } }
+  .product-card {
+    .product-overlay { display: none; }
+    .mobile-add-to-cart { display: block; }
+  }
 }
 
-// لا حاجة للقاعدة المكررة في الأسفل، تم حذفها
+
+// --- (المتغيرات كما هي) ---
+$primary-color: #8a5a2b;
+$secondary-color: #fff;
+// ... باقي المتغيرات
+
+// ======================================================
+//  (أنماط Hero Section كما هي)
+// ======================================================
+
+// ======================================================
+//  قسم الفئات (مع التعديل للتوسيط)
+// ======================================================
+.categories-section-wrapper {
+  background-color: $card-bg;
+  padding-bottom: 4rem;
+
+  // --- الحاوية الجديدة للتوسيط ---
+  .categories-grid-container {
+    display: flex;
+    justify-content: center; // توسيط الشبكة أفقيًا
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); // دائمًا 4 أعمدة على الشاشات الكبيرة
+    gap: 1.5rem;
+    max-width: 1200px; // تحديد عرض أقصى للشبكة
+    width: 100%;
+
+    @media (max-width: 991px) {
+      grid-template-columns: repeat(2, 1fr); // عمودان على الشاشات المتوسطة والصغيرة
+    }
+  }
+
+  .category-card {
+    // ... (أنماط بطاقة الفئة كما هي)
+  }
+}
+
+// ======================================================
+//  أقسام السلايدر المتعددة (مع تعديل العنوان وإضافة الزر)
+// ======================================================
+.category-slider-section {
+  padding: 4rem 0;
+  &.odd-section {
+    background-color: $section-odd-bg;
+  }
+
+  .section-header {
+    // الآن العنوان في الوسط
+    text-align: center;
+    margin-bottom: 2rem;
+    background-color: #fdfaf5;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 2.2rem;
+    font-family: $font-family-headings;
+
+    color: $primary-color;
+  }
+
+  // --- تصميم الزر الجديد ---
+  .view-all-button-wrapper {
+    text-align: center;
+    margin-top: 2.5rem; // مسافة فوق الزر
+  }
+
+  .btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: transparent;
+    color: $primary-color;
+    border: 2px solid $primary-color;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    i {
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      background-color: $primary-color;
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+      i {
+        transform: translateX(-5px);
+      }
+    }
+  }
+}
+
+// ======================================================
+//  (باقي الأنماط مثل Product Card و Swiper و Features كما هي)
+// ======================================================

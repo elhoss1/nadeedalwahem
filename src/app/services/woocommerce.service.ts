@@ -1,135 +1,163 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { Product } from '../interface/product'; // تأكد من أن هذا المسار صحيح
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { Product } from '../interface/product';
 
 @Injectable({
   providedIn: 'root'
-} )
+})
 export class WoocommerceService {
-  private baseUrl = 'https://www.nadeedalwashm.com/wp-json/wc/v3';
-  private consumerKey = 'ck_c039cdfa4d414f773dfde6f88a9bd7d356f8a11a';
-  private consumerSecret = 'cs_7e000061084cfcf98c3d3ac063508856404da1ee';
+  // === Configuration ===
+  // تحذير: يفضل وضع المفاتيح في environment.ts وعدم تركها هنا لأسباب أمنية
+  private readonly wooBaseUrl = 'https://www.nadeedalwashm.com/wp-json/wc/v3';
+  private readonly wpBaseUrl = 'https://www.nadeedalwashm.com/wp-json/wp/v2';
 
-  // Observable subjects for cart management
-  private cartSubject = new BehaviorSubject<any[]>([] );
+  private readonly consumerKey = 'ck_c039cdfa4d414f773dfde6f88a9bd7d356f8a11a';
+  private readonly consumerSecret = 'cs_7e000061084cfcf98c3d3ac063508856404da1ee';
+  private readonly cartStorageKey = 'nadeed_cart';
+
+  // === State Management (Cart) ===
+  private cartSubject = new BehaviorSubject<any[]>([]);
   public cart$ = this.cartSubject.asObservable();
 
-  constructor(private http: HttpClient ) {
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
     this.loadCartFromLocalStorage();
   }
 
-  // دالة مركزية لإنشاء هيدرز المصادقة
+  // =================================================================
+  // Section 1: Helper Methods (دوال مساعدة)
+  // =================================================================
+
   private getAuthHeaders(): HttpHeaders {
+    // Basic Auth Header
     const auth = btoa(`${this.consumerKey}:${this.consumerSecret}`);
     return new HttpHeaders({
-      'Authorization': `Basic ${auth}`
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json'
     });
   }
 
-  // دالة مركزية لتحويل كائن إلى HttpParams
   private buildParams(params: any): HttpParams {
-    let httpParams = new HttpParams( );
-    for (const key in params) {
-      if (params.hasOwnProperty(key) && params[key] !== null && params[key] !== undefined) {
-        httpParams = httpParams.set(key, params[key].toString( ));
-      }
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key] !== null && params[key] !== undefined) {
+          httpParams = httpParams.set(key, params[key].toString());
+        }
+      });
     }
     return httpParams;
   }
 
-  /**
-   * الحصول على جميع المنتجات
-   */
-  getProducts(params?: any ): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/products`, {
-      headers: this.getAuthHeaders( ),
+  private handleError(operation = 'operation', result?: any) {
+    return (error: any): Observable<any> => {
+      console.error(`${operation} failed: ${error.message}`, error);
+      if (result) {
+        return of(result);
+      }
+      return throwError(() => new Error(`${operation} failed.`));
+    };
+  }
+
+  // =================================================================
+  // Section 2: Products API (المنتجات)
+  // =================================================================
+
+  getProducts(params?: any): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.wooBaseUrl}/products`, {
+      headers: this.getAuthHeaders(),
       params: this.buildParams(params)
     }).pipe(
-      catchError(error => {
-        console.error('HttpClient Error fetching products:', error);
-        return of([]); // أرجع مصفوفة فارغة عند الخطأ
-      })
+      catchError(this.handleError('getProducts', []))
     );
   }
 
-  /**
-   * الحصول على منتج واحد
-   */
-  getProduct(id: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/products/${id}`, {
-      headers: this.getAuthHeaders( )
+  getProduct(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.wooBaseUrl}/products/${id}`, {
+      headers: this.getAuthHeaders()
     }).pipe(
-      catchError(error => {
-        console.error(`HttpClient Error fetching product with id ${id}:`, error);
-        return throwError(() => new Error('Failed to fetch product.'));
-      })
+      catchError(this.handleError(`getProduct id=${id}`))
     );
   }
 
-  /**
-   * الحصول على الفئات
-   */
   getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/products/categories`, {
-      headers: this.getAuthHeaders( )
+    return this.http.get<any[]>(`${this.wooBaseUrl}/products/categories`, {
+      headers: this.getAuthHeaders()
     }).pipe(
-      catchError(error => {
-        console.error('HttpClient Error fetching categories:', error);
-        return of([]);
-      })
+      catchError(this.handleError('getCategories', []))
     );
   }
 
-  /**
-   * الحصول على الطلبات
-   */
+  // =================================================================
+  // Section 3: Orders API (الطلبات)
+  // =================================================================
+
   getOrders(params?: any): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/orders`, {
-      headers: this.getAuthHeaders( ),
+    return this.http.get<any[]>(`${this.wooBaseUrl}/orders`, {
+      headers: this.getAuthHeaders(),
       params: this.buildParams(params)
     }).pipe(
-      catchError(error => {
-        console.error('HttpClient Error fetching orders:', error);
-        return of([]);
-      })
+      catchError(this.handleError('getOrders', []))
     );
   }
 
-  /**
-   * إنشاء طلب جديد
-   */
-  createOrder(orderData: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/orders`, orderData, {
-      headers: this.getAuthHeaders( )
-    }).pipe(
-      catchError(error => {
-        console.error('HttpClient Error creating order:', error);
-        return throwError(() => new Error('Failed to create order.'));
-      })
-    );
-  }
-
-  /**
-   * الحصول على طلب واحد
-   */
   getOrder(id: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/orders/${id}`, {
-      headers: this.getAuthHeaders( )
+    return this.http.get<any>(`${this.wooBaseUrl}/orders/${id}`, {
+      headers: this.getAuthHeaders()
     }).pipe(
-      catchError(error => {
-        console.error(`HttpClient Error fetching order with id ${id}:`, error);
-        return throwError(() => new Error('Failed to fetch order.'));
-      })
+      catchError(this.handleError(`getOrder id=${id}`))
     );
   }
 
-  /**
-   * إدارة السلة المحلية
-   */
+  createOrder(orderData: any): Observable<any> {
+    return this.http.post<any>(`${this.wooBaseUrl}/orders`, orderData, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(this.handleError('createOrder'))
+    );
+  }
+
+  // =================================================================
+  // Section 4: WordPress Blog API (المدونة)
+  // =================================================================
+
+  getPosts(params?: any): Observable<any[]> {
+    return this.http.get<any[]>(`${this.wpBaseUrl}/posts?_embed`, {
+      params: this.buildParams(params)
+    }).pipe(
+      catchError(this.handleError('getPosts', []))
+    );
+  }
+
+  getPost(id: number): Observable<any> {
+    return this.http.get<any>(`${this.wpBaseUrl}/posts/${id}?_embed`).pipe(
+      catchError(this.handleError(`getPost id=${id}`))
+    );
+  }
+
+  // =================================================================
+  // Section 5: Cart Management (إدارة السلة)
+  // =================================================================
+
+  getCart(): any[] {
+    return this.cartSubject.value;
+  }
+
+  getCartTotal(): number {
+    return this.cartSubject.value.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }
+
+  getCartItemCount(): number {
+    return this.cartSubject.value.reduce((count, item) => count + item.quantity, 0);
+  }
+
   addToCart(product: any): void {
-    const currentCart = this.cartSubject.value;
+    const currentCart = [...this.cartSubject.value];
     const existingItem = currentCart.find(item => item.id === product.id);
 
     if (existingItem) {
@@ -138,103 +166,56 @@ export class WoocommerceService {
       currentCart.push({ ...product, quantity: product.quantity || 1 });
     }
 
-    this.cartSubject.next([...currentCart]);
-    this.saveCartToLocalStorage();
+    this.updateCartState(currentCart);
   }
 
-  /**
-   * إزالة من السلة
-   */
   removeFromCart(productId: number): void {
     const currentCart = this.cartSubject.value.filter(item => item.id !== productId);
-    this.cartSubject.next(currentCart);
-    this.saveCartToLocalStorage();
+    this.updateCartState(currentCart);
   }
 
-  /**
-   * تحديث كمية المنتج في السلة
-   */
   updateCartQuantity(productId: number, quantity: number): void {
-    const currentCart = this.cartSubject.value;
-    const item = currentCart.find(item => item.id === productId);
+    if (quantity <= 0) {
+      this.removeFromCart(productId);
+      return;
+    }
+
+    const currentCart = [...this.cartSubject.value];
+    const item = currentCart.find(i => i.id === productId);
 
     if (item) {
-      if (quantity <= 0) {
-        this.removeFromCart(productId);
-      } else {
-        item.quantity = quantity;
-        this.cartSubject.next([...currentCart]);
-        this.saveCartToLocalStorage();
-      }
+      item.quantity = quantity;
+      this.updateCartState(currentCart);
     }
   }
 
-  /**
-   * مسح السلة
-   */
   clearCart(): void {
-    this.cartSubject.next([]);
-    localStorage.removeItem('nadeed_cart');
+    this.updateCartState([]);
   }
 
-  /**
-   * الحصول على السلة الحالية
-   */
-  getCart(): any[] {
-    return this.cartSubject.value;
+  // دوال خاصة لتحديث الحالة والتخزين
+  private updateCartState(cart: any[]): void {
+    this.cartSubject.next(cart);
+    this.saveCartToLocalStorage(cart);
   }
 
-  /**
-   * حفظ السلة في localStorage
-   */
-  private saveCartToLocalStorage(): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('nadeed_cart', JSON.stringify(this.cartSubject.value));
+  private saveCartToLocalStorage(cart: any[]): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.cartStorageKey, JSON.stringify(cart));
     }
   }
 
-  /**
-   * تحميل السلة من localStorage
-   */
-  loadCartFromLocalStorage(): void {
-    if (typeof localStorage !== 'undefined') {
-      const savedCart = localStorage.getItem('nadeed_cart');
+  public loadCartFromLocalStorage(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const savedCart = localStorage.getItem(this.cartStorageKey);
       if (savedCart) {
-        this.cartSubject.next(JSON.parse(savedCart));
+        try {
+          this.cartSubject.next(JSON.parse(savedCart));
+        } catch (e) {
+          console.error('Error parsing cart from local storage', e);
+          this.cartSubject.next([]);
+        }
       }
     }
-  }
-
-  /**
-   * حساب إجمالي السلة
-   */
-  getCartTotal(): number {
-    return this.cartSubject.value.reduce((total, item) => {
-      return total + (item.price * item.quantity);
-    }, 0);
-  }
-
-  /**
-   * الحصول على عدد العناصر في السلة
-   */
-  getCartItemCount(): number {
-    return this.cartSubject.value.reduce((count, item) => {
-      return count + item.quantity;
-    }, 0);
-  }
-
-
-  getPosts(params?: any): Observable<any[]> {
-    // ملاحظة: نستخدم مسار API الخاص بـ WordPress هنا، وليس WooCommerce
-    const wpApiUrl = 'https://www.nadeedalwashm.com/wp-json/wp/v2';
-    return this.http.get<any[]>(`${wpApiUrl}/posts?_embed`, { params } );
-  }
-
-  /**
-   * الحصول على مقال واحد (Post)
-   */
-  getPost(id: number): Observable<any> {
-    const wpApiUrl = 'https://www.nadeedalwashm.com/wp-json/wp/v2';
-    return this.http.get<any>(`${wpApiUrl}/posts/${id}?_embed` );
   }
 }

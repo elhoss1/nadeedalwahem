@@ -11,15 +11,17 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withInMemoryScrolling({
-        scrollPositionRestoration: 'top', // 👈 يرجع لأعلى الصفحة
-        anchorScrolling: 'enabled'        // 👈 يدعم #anchors
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled'
       })
     ),
+    // 1. جرب تعطيل withEventReplay مؤقتاً إذا استمرت المشكلة
+    provideClientHydration(),
 
-    provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch()),
+    // 2. استخدام provideAnimations كافٍ، لا داعي لـ importProvidersFrom(BrowserAnimationsModule)
     provideAnimations(),
-    importProvidersFrom(BrowserAnimationsModule),
+
+    provideHttpClient(withFetch()),
 
     provideToastr({
       timeOut: 3000,

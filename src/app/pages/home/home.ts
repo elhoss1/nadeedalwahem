@@ -1,86 +1,101 @@
-import { Product } from './../../interface/product';
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink, RouterModule } from '@angular/router';
-import { WoocommerceService } from '../../services/woocommerce.service';
-import { ChangeDetectorRef } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import {
-  trigger,
-  transition,
-  style,
-  animate,
-  query,
-  stagger
-} from '@angular/animations';
-
+  Component,
+  OnInit,
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgZone,
+  ChangeDetectorRef,
+  Inject,
+  PLATFORM_ID
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { WoocommerceService } from '../../services/woocommerce.service';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule ,RouterLink],
+  imports: [CommonModule, RouterModule],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
-  animations: [
-    trigger('cardAnimation', [
-      transition(':enter', [ // يتم تفعيله عند دخول الـ component إلى العرض
-        query('.product-card', [
-          style({ opacity: 0, transform: 'translateY(30px)' }),
-          stagger('100ms', [
-            animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-          ])
-        ], { optional: true })
-      ])
-    ])
-  ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class HomeComponent implements OnInit {
-  featuredProducts: any[] = [];
-  categories: any[] = [];
-  isLoading = true;
-  private Product: Product | undefined
 
-  constructor(private woocommerceService: WoocommerceService , private cdr: ChangeDetectorRef , private toastr: ToastrService ) {}
+  sections = [
+    { id: 79, name: 'تمور خام', path: '/Rawdates', products: [] as any[] },
+    { id: 48, name: 'مكنوز آلي', path: '/maknoozautomaticdates', products: [] as any[] },
+    { id: 21, name: 'تعبئة نثري', path: '/Surveydatesprose', products: [] as any[] },
+    { id: 169, name: 'المعمول', path: '/Maamoul', products: [] as any[] },
+  ];
+
+  isLoading = true;
+
+  constructor(
+    private woo: WoocommerceService,
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    // تسجيل Swiper فقط في المتصفح لمنع أخطاء السيرفر (InvalidCharacterError)
+    if (isPlatformBrowser(this.platformId)) {
+      import('swiper/element/bundle').then(module => {
+        module.register();
+      });
+    }
+  }
 
   ngOnInit(): void {
-    this.loadFeaturedProducts();
+    this.loadProductsForSections();
   }
 
-  loadFeaturedProducts(): void {
-
+  loadProductsForSections(): void {
   this.isLoading = true;
-  this.woocommerceService.getProducts({ per_page: 8, orderby: 'popularity' }).subscribe(
-  (data: any[]) => {
-    this.featuredProducts = data;
-    this.isLoading = false;
-    this.cdr.detectChanges();
-  },
-  (error) => {
-    console.error('Error loading products:', error);
-    this.isLoading = false;
-    this.cdr.detectChanges();
-  }
-);
+  const requests = this.sections.map(section =>
+    this.woo.getProducts({ category: section.id, per_page: 8 })
+  );
 
+  forkJoin(requests).subscribe({
+    next: (results) => {
+      // نستخدم setTimeout(0) لإخراج التحديث من دورة Angular الحالية وتجنب التجميد
+      setTimeout(() => {
+        this.zone.run(() => {
+          results.forEach((products, i) => {
+            this.sections[i].products = products || [];
+          });
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        });
+      }, 0);
+    },
+    error: (err) => {
+      this.zone.run(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      });
+    }
+  });
 }
 
-
-
   addToCart(product: any): void {
-    this.woocommerceService.addToCart({
+    if (!product) return;
+
+    // تحويل السعر لرقم بشكل آمن
+    const priceValue = parseFloat(product.price || '0');
+
+    this.woo.addToCart({
       id: product.id,
       name: product.name,
-      price: parseFloat(product.price),
+      price: priceValue,
       image: this.getProductImage(product),
       quantity: 1
     });
-    this.toastr.success(`تمت إضافة "${product.name}" إلى السلة بنجاح!`, 'نجاح', {
-      // يمكنك إضافة إعدادات خاصة لهذه الرسالة فقط إذا أردت
-      closeButton: true
-    });
+    this.toastr.success(`تمت إضافة ${product.name}`, 'نجاح');
   }
 
   getProductImage(product: any): string {
-    return product.images?.[0]?.src || '/placeholder.png';
+    return product.images?.[0]?.src || 'assets/placeholder.png';
   }
 }
