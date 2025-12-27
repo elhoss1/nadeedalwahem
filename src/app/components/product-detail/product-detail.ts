@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core'; // أضفنا هؤلاء
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { WoocommerceService } from '../../services/woocommerce.service';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-detail',
+  standalone: true, // تأكد أنها standalone
   imports: [CommonModule, RouterModule],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
@@ -20,49 +21,64 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private woocommerceService: WoocommerceService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef, // حقن الخدمة
+    private zone: NgZone           // حقن الخدمة
   ) {}
 
   ngOnInit(): void {
-    // استخراج 'id' المنتج من الرابط
-    const productId = this.route.snapshot.paramMap.get('id');
-
-    if (productId) {
-      this.loadProductDetails(+productId); // علامة + لتحويل النص إلى رقم
-    }
+    this.route.paramMap.subscribe(params => {
+      const productId = params.get('id');
+      if (productId) {
+        this.quantity = 1;
+        this.loadProductDetails(+productId);
+      }
+    });
   }
 
   loadProductDetails(id: number): void {
     this.isLoading = true;
+    this.cdr.detectChanges(); // تحديث فوري لإظهار اللودر
+
     this.woocommerceService.getProduct(id).subscribe({
       next: (data) => {
-        this.product = data;
-        // تعيين الصورة الرئيسية عند تحميل المنتج
-        if (this.product.images && this.product.images.length > 0) {
-          this.selectedImage = this.product.images[0].src;
-        }
-        this.isLoading = false;
-        // جلب المنتجات ذات الصلة بناءً على تصنيف المنتج الحالي
-        if (this.product.categories && this.product.categories.length > 0) {
-          this.loadRelatedProducts(this.product.categories[0].id, this.product.id);
-        }
+        // نستخدم zone.run لضمان العودة لبيئة Angular وتحديث الواجهة
+        this.zone.run(() => {
+          this.product = data;
+          if (this.product.images && this.product.images.length > 0) {
+            this.selectedImage = this.product.images[0].src;
+          }
+          this.isLoading = false;
+
+          // جلب المنتجات ذات الصلة
+          if (this.product.categories && this.product.categories.length > 0) {
+            this.loadRelatedProducts(this.product.categories[0].id, this.product.id);
+          }
+
+          this.cdr.detectChanges(); // إجبار المتصفح على الرسم الآن
+        });
       },
       error: (err) => {
-        console.error('Error loading product details:', err);
-        this.isLoading = false;
-        this.toastr.error('حدث خطأ أثناء تحميل تفاصيل المنتج.');
+        this.zone.run(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          this.toastr.error('حدث خطأ أثناء تحميل تفاصيل المنتج.');
+        });
       }
     });
   }
 
   loadRelatedProducts(categoryId: number, currentProductId: number): void {
     const params = {
-      per_page: 5, // عدد المنتجات ذات الصلة
+      per_page: 5,
       category: categoryId,
-      exclude: [currentProductId] // استثناء المنتج الحالي من القائمة
+      exclude: [currentProductId]
     };
     this.woocommerceService.getProducts(params).subscribe(data => {
-      this.relatedProducts = data;
+      this.zone.run(() => {
+        this.relatedProducts = data;
+        this.cdr.detectChanges();
+      });
     });
   }
 
