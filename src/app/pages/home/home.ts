@@ -24,7 +24,7 @@ import { forkJoin } from 'rxjs';
 export class HomeComponent implements OnInit {
 
   sections = [
-    { id: 79, name: 'تمور خام', path: '/Rawdates', products: [] as any[] },
+    { id: 34, name: 'تمور خام', path: '/Rawdates', products: [] as any[] },
     { id: 48, name: 'مكنوز آلي', path: '/maknoozautomaticdates', products: [] as any[] },
     { id: 21, name: 'تعبئة نثري', path: '/Surveydatesprose', products: [] as any[] },
     { id: 169, name: 'المعمول', path: '/Maamoul', products: [] as any[] },
