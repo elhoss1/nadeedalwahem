@@ -22,6 +22,8 @@ export const appConfig: ApplicationConfig = {
     // withFetch() ضرورية جداً في Angular 18 لضمان سرعة جلب البيانات
     provideHttpClient(withFetch()),
 
+
+
     provideToastr({
       timeOut: 3000,
       positionClass: 'toast-bottom-right',

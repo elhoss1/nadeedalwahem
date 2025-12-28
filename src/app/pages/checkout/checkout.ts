@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WoocommerceService } from '../../services/woocommerce.service';
@@ -32,29 +32,34 @@ export class CheckoutComponent implements OnInit {
   orderPlaced = false;
   orderError: string = '';
 
-  constructor(private woocommerceService: WoocommerceService) { }
+  constructor(
+    private woocommerceService: WoocommerceService,
+    private cdr: ChangeDetectorRef, // حقن الخدمة
+    private zone: NgZone        // حقن الخدمة
+  ) { }
 
   ngOnInit(): void {
     this.woocommerceService.cart$.subscribe(items => {
-      this.cartItems = items;
-      this.cartTotal = this.woocommerceService.getCartTotal();
-      this.grandTotal = this.cartTotal + this.shippingCost;
+      // نلف التحديث بـ zone.run و cdr لضمان ظهور البيانات فوراً
+      this.zone.run(() => {
+        this.cartItems = items;
+        this.cartTotal = this.woocommerceService.getCartTotal();
+        this.grandTotal = this.cartTotal + this.shippingCost;
+        this.cdr.detectChanges(); // تنبيه Angular بوجود تغييرات
+      });
     });
-
-    if (this.cartItems.length === 0) {
-      // توجيه المستخدم إلى السلة إذا كانت فارغة
-      // يجب إضافة Router في imports وتوجيه المستخدم
-    }
   }
 
   placeOrder(): void {
     if (!this.validateForm()) {
       this.orderError = 'يرجى ملء جميع الحقول المطلوبة.';
+      this.cdr.detectChanges(); // تحديث لعرض الخطأ
       return;
     }
 
     this.isSubmitting = true;
     this.orderError = '';
+    this.cdr.detectChanges(); // إظهار لودر الزر فوراً
 
     const lineItems = this.cartItems.map(item => ({
       product_id: item.id,
@@ -100,20 +105,24 @@ export class CheckoutComponent implements OnInit {
 
 
     // الكود الفعلي لإنشاء الطلب (يتطلب دالة createOrder في الخدمة)
-    this.woocommerceService.createOrder(orderData).subscribe(
-      (response) => {
-        this.isSubmitting = false;
-        this.orderPlaced = true;
-        this.woocommerceService.clearCart();
-        // يمكن توجيه المستخدم لصفحة شكر
+    this.woocommerceService.createOrder(orderData).subscribe({
+      next: (response) => {
+        this.zone.run(() => {
+          this.isSubmitting = false;
+          this.orderPlaced = true;
+          this.woocommerceService.clearCart();
+          this.cdr.detectChanges(); // إخفاء اللودر وإظهار رسالة النجاح فوراً
+        });
       },
-      (error) => {
-        this.isSubmitting = false;
-        this.orderError = 'حدث خطأ أثناء إتمام الطلب. يرجى المحاولة مرة أخرى.';
-        console.error('Order creation error:', error);
+      error: (error) => {
+        this.zone.run(() => {
+          this.isSubmitting = false;
+          this.orderError = 'حدث خطأ أثناء إتمام الطلب.';
+          this.cdr.detectChanges();
+          console.error('Order creation error:', error);
+        });
       }
-    );
-
+    });
   }
 
   validateForm(): boolean {

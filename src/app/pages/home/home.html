@@ -3,14 +3,55 @@
   <!--    قسم البانر الرئيسي    -->
   <!-- ======================= -->
   <section class="hero-section">
-    <div class="container">
-      <div class="hero-content">
-        <h1>مرحباً بك في نضيد الوشم</h1>
-        <p>من تمور المشرق الفاخرة وشتلاتها المميزة، نرحب بك في عالم التمور الاستثنائية، بنكهات لا تُنسى، تُنتج من أفضل أنواع التمور بعناية فائقة.</p>
-        <a [routerLink]="['/products']" class="btn btn-secondary btn-lg">تصفح منتجاتنا</a>
+  <swiper-container
+    autoplay-delay="3000"
+    loop="true"
+    pagination="true"
+    effect="fade"
+    class="hero-swiper">
+
+    <!-- الصورة الأولى -->
+    <swiper-slide>
+      <div class="hero-slide-content" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('imegs/مصنع-نضيد-الوشم-للتمور-19-1.jpg');">
+        <div class="container">
+          <div class="hero-text">
+            <h1>مرحباً بك في نضيد الوشم</h1>
+            <p>من تمور المشرق الفاخرة وشتلاتها المميزة، نرحب بك في عالم التمور الاستثنائية.</p>
+            <a [routerLink]="['/products']" class="btn btn-secondary btn-lg">تصفح منتجاتنا</a>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </swiper-slide>
+
+    <!-- الصورة الثانية -->
+    <swiper-slide>
+      <div class="hero-slide-content" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('imegs/مصنع-نضيد-الوشم-للتمور-17.jpg');">
+        <div class="container">
+          <div class="hero-text">
+            <h1>جودة لا تضاهى</h1>
+            <p>نختار لك أفضل أنواع التمور بعناية فائقة لنضمن لك تجربة فريدة وطعم لا ينسى.</p>
+            <a [routerLink]="['/products']" class="btn btn-secondary btn-lg">اكتشف المزيد</a>
+          </div>
+        </div>
+      </div>
+    </swiper-slide>
+
+    <!-- الصورة الثالثة -->
+    <swiper-slide>
+      <div class="hero-slide-content" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('imegs/نضيد الوشم اسليد.jpg');">
+        <div class="container">
+          <div class="hero-text">
+            <h1>شتلات مميزة</h1>
+            <p>نوفر لك أفضل أنواع الشتلات لزراعة مستدامة وإنتاج وفير من أجود أنواع النخيل.</p>
+            <a [routerLink]="['/products']" class="btn btn-secondary btn-lg">تسوق الآن</a>
+          </div>
+        </div>
+      </div>
+    </swiper-slide>
+
+  </swiper-container>
+</section>
+
 
   <!-- ======================= -->
   <!--      قسم الفئات        -->
@@ -71,9 +112,10 @@
     [navigation]="true"
     [pagination]="{ clickable: true }"
     [loop]="true"
+    autoplay-delay="1000"
     [speed]="800"
     [autoplay]="{
-      delay: 3000,
+      delay: 1000,
       disableOnInteraction: false
     }"
     [breakpoints]="{

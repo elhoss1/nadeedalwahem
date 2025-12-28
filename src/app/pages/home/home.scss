@@ -27,19 +27,77 @@ $font-family-base: 'Cairo', 'Segoe UI', sans-serif;
 //  قسم البانر الرئيسي (Hero)
 // ======================================================
 .hero-section {
-  background: url('/imegs/slaid.png') no-repeat center center;
-  background-size: cover;
-  height: 500px;
+  // background: url('/imegs/slaid.png') no-repeat center center;
+  // background-size: cover;
+  height: 200px;
   display: flex;
   align-items: center;
   position: relative;
   color: #fff;
   &::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); }
   .hero-content {
-    position: relative; z-index: 10; max-width: 600px; text-align: right;
+    position: relative; z-index: 10; max-width: 300px; text-align: right;
     h1 { font-family: $font-family-headings; font-size: 3rem; font-weight: 700; color: $secondary-color; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
     p { font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.8; }
     .btn-secondary { background-color: $secondary-color; border-color: $secondary-color; color: $primary-color; font-weight: 700; padding: 0.75rem 1.5rem; &:hover { background-color: darken($secondary-color, 10%); border-color: darken($secondary-color, 10%); } }
+  }
+}
+
+
+
+.hero-section {
+  width: 100%;
+  height: 75vh; // ارتفاع السلايدر (80% من طول الشاشة)
+  overflow: hidden;
+
+  .hero-swiper {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
+
+  .hero-slide-content {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+
+    .hero-text {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+
+      h1 {
+        font-size: 3.5rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+
+      p {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+      }
+    }
+  }
+}
+
+// تنسيق خاص للجوال
+@media (max-width: 768px) {
+  .hero-section {
+    height: 60vh;
+
+    .hero-text {
+      h1 { font-size: 2rem !important; }
+      p { font-size: 1.1rem !important; }
+    }
   }
 }
 
