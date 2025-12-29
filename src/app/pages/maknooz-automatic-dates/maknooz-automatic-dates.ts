@@ -121,7 +121,8 @@ export class MaknoozAutomaticDates implements OnInit {
       name: product.name,
       price: parseFloat(product.price),
       image: this.getProductImage(product),
-      quantity: 1
+      quantity: 1,
+      weight: parseFloat(product.weight || '1')
     });
 
     // استبدل alert() باستدعاء التوستر

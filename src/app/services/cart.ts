@@ -6,6 +6,8 @@ import { Product } from '../interface/product';
 export interface CartItem {
   product: Product;
   quantity: number;
+  weight: number;
+
 }
 
 @Injectable({
@@ -25,8 +27,11 @@ export class CartService {
   addToCart(product: Product, quantity: number = 1): void {
   if (!product || !product.id) {
     console.warn('⚠️ المنتج غير معرف أو لا يحتوي على id:', product);
-    return; // نوقف التنفيذ بهدوء بدون كراش
+    return;
   }
+
+  // 🔥 استخراج الوزن (افتراضي 1 كجم لو مش موجود)
+  const productWeight = parseFloat((product as any).weight || '1');
 
   const existingItem = this.cartItems.find(
     (item) => item?.product?.id === product.id
@@ -35,12 +40,17 @@ export class CartService {
   if (existingItem) {
     existingItem.quantity += quantity;
   } else {
-    this.cartItems.push({ product, quantity });
+    this.cartItems.push({
+      product,
+      quantity,
+      weight: productWeight // 🔥 هنا الإضافة
+    });
   }
 
   this.saveCart();
   this.cartSubject.next(this.cartItems);
 }
+
 
 
   // إزالة منتج من السلة

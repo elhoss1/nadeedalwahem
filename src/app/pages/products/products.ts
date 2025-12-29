@@ -91,7 +91,8 @@ export class ProductsComponent implements OnInit {
       name: product.name,
       price: parseFloat(product.price),
       image: this.getProductImage(product),
-      quantity: 1
+      quantity: 1,
+      weight: parseFloat(product.weight || '1')
     });
     this.toastr.success(`تمت إضافة "${product.name}" إلى السلة بنجاح!`, 'نجاح', {
       // يمكنك إضافة إعدادات خاصة لهذه الرسالة فقط إذا أردت

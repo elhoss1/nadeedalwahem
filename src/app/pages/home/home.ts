@@ -94,7 +94,6 @@ export class HomeComponent implements OnInit {
       weight: parseFloat(product.weight || '0')
     });
     this.toastr.success(`تمت إضافة ${product.name}`, 'نجاح');
-    console.log(product.weight)
   }
 
   getProductImage(product: any): string {
