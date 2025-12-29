@@ -7,14 +7,19 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule , RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './checkout.html',
   styleUrls: ['./checkout.scss']
 })
 export class CheckoutComponent implements OnInit {
+
   cartItems: any[] = [];
   cartTotal: number = 0;
-  shippingCost: number = 50;
+
+  // 🔥 الوزن والشحن
+  totalWeight: number = 0;
+  shippingCost: number = 0;
+
   grandTotal: number = 0;
 
   checkoutForm = {
@@ -25,7 +30,7 @@ export class CheckoutComponent implements OnInit {
     address: '',
     city: '',
     country: 'السعودية',
-    paymentMethod: 'cod' // cod: Cash on Delivery
+    paymentMethod: 'cod'
   };
 
   isSubmitting = false;
@@ -34,32 +39,83 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private woocommerceService: WoocommerceService,
-    private cdr: ChangeDetectorRef, // حقن الخدمة
-    private zone: NgZone        // حقن الخدمة
-  ) { }
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.woocommerceService.cart$.subscribe(items => {
-      // نلف التحديث بـ zone.run و cdr لضمان ظهور البيانات فوراً
       this.zone.run(() => {
         this.cartItems = items;
+
+        // إجمالي المنتجات
         this.cartTotal = this.woocommerceService.getCartTotal();
+
+        // حساب الوزن
+        this.totalWeight = this.calculateTotalWeight();
+
+        // حساب الشحن (ثابت أو حسب الوزن)
+        this.shippingCost = this.calculateShippingCost(this.totalWeight);
+
+        // الإجمالي النهائي
         this.grandTotal = this.cartTotal + this.shippingCost;
-        this.cdr.detectChanges(); // تنبيه Angular بوجود تغييرات
+
+        this.cdr.detectChanges();
       });
     });
   }
 
+  // =========================
+  // 🔥 هل يوجد منتج بدون وزن؟
+  // =========================
+  hasProductWithoutWeight(): boolean {
+  return this.cartItems.some(item => {
+    return item.quantity > 0 && item.weight <= 0;
+  });
+}
+
+
+
+  // =========================
+  // 🔥 حساب الوزن الإجمالي
+  // =========================
+  calculateTotalWeight(): number {
+    return this.cartItems.reduce((total, item) => {
+      return total + (item.weight * item.quantity);
+    }, 0);
+  }
+
+
+
+  // =========================
+  // 🔥 حساب الشحن
+  // =========================
+  calculateShippingCost(weight: number): number {
+
+  if (this.hasProductWithoutWeight()) {
+    return 25;
+  }
+
+  const stepWeight = 20;
+  const stepPrice = 25;
+
+  return Math.ceil(weight / stepWeight) * stepPrice;
+}
+
+
+  // =========================
+  // إنشاء الطلب
+  // =========================
   placeOrder(): void {
     if (!this.validateForm()) {
       this.orderError = 'يرجى ملء جميع الحقول المطلوبة.';
-      this.cdr.detectChanges(); // تحديث لعرض الخطأ
+      this.cdr.detectChanges();
       return;
     }
 
     this.isSubmitting = true;
     this.orderError = '';
-    this.cdr.detectChanges(); // إظهار لودر الزر فوراً
+    this.cdr.detectChanges();
 
     const lineItems = this.cartItems.map(item => ({
       product_id: item.id,
@@ -68,7 +124,7 @@ export class CheckoutComponent implements OnInit {
 
     const orderData = {
       payment_method: this.checkoutForm.paymentMethod,
-      payment_method_title: this.checkoutForm.paymentMethod === 'cod' ? 'الدفع عند الاستلام' : 'بطاقة ائتمانية',
+      payment_method_title: 'الدفع عند الاستلام',
       set_paid: false,
       billing: {
         first_name: this.checkoutForm.firstName,
@@ -89,37 +145,30 @@ export class CheckoutComponent implements OnInit {
       line_items: lineItems,
       shipping_lines: [
         {
-          method_id: "flat_rate",
-          method_title: "شحن ثابت",
+          method_id: 'weight_based',
+          method_title: this.hasProductWithoutWeight()
+            ? 'شحن ثابت'
+            : `شحن حسب الوزن (${this.totalWeight.toFixed(1)} كجم)`,
           total: this.shippingCost.toString()
         }
       ]
     };
 
-    // محاكاة إنشاء الطلب
-    setTimeout(() => {
-      this.isSubmitting = false;
-      this.orderPlaced = true;
-      this.woocommerceService.clearCart();
-    }, 2000);
-
-
-    // الكود الفعلي لإنشاء الطلب (يتطلب دالة createOrder في الخدمة)
     this.woocommerceService.createOrder(orderData).subscribe({
-      next: (response) => {
+      next: () => {
         this.zone.run(() => {
           this.isSubmitting = false;
           this.orderPlaced = true;
           this.woocommerceService.clearCart();
-          this.cdr.detectChanges(); // إخفاء اللودر وإظهار رسالة النجاح فوراً
+          this.cdr.detectChanges();
         });
       },
       error: (error) => {
         this.zone.run(() => {
           this.isSubmitting = false;
           this.orderError = 'حدث خطأ أثناء إتمام الطلب.';
+          console.error(error);
           this.cdr.detectChanges();
-          console.error('Order creation error:', error);
         });
       }
     });

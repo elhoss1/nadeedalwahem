@@ -36,6 +36,34 @@ $font-family-base: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
+/* الوضع الطبيعي (ديسكتوب) */
+.mobile-row {
+  display: block;
+}
+
+/* موبايل فقط */
+@media (max-width: 768px) {
+  .mobile-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .search-group {
+    flex: 2; /* البحث أعرض */
+  }
+
+  .sort-group {
+    flex: 1;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+}
+
+
 // --- تصميم الفلاتر الجانبية ---
 .filters-sidebar {
   background-color: $card-bg;

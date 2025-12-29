@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WoocommerceService } from '../../services/woocommerce.service';
-import { ToastrService } from 'ngx-toastr'; // 1. استيراد ToastrService
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cart',
@@ -13,41 +13,86 @@ import { ToastrService } from 'ngx-toastr'; // 1. استيراد ToastrService
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
+
   cartItems: any[] = [];
   total = 0;
 
+  // 🔥 الوزن والشحن
+  totalWeight = 0;
+  shippingCost = 0;
+
   constructor(
     private woocommerceService: WoocommerceService,
-    private toastr: ToastrService, // 2. حقن ToastrService
-    private cdr: ChangeDetectorRef // حقن ChangeDetectorRef لتحسين التحديث
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // الاشتراك في تغييرات السلة لتحديث الواجهة تلقائيًا
     this.woocommerceService.cart$.subscribe((items) => {
       this.cartItems = items;
-      this.calculateTotal();
-      this.cdr.detectChanges(); // ضمان تحديث الواجهة
+
+      // إجمالي المنتجات
+      this.total = this.woocommerceService.getCartTotal();
+
+      // حساب الوزن
+      this.totalWeight = this.calculateTotalWeight();
+
+      // حساب الشحن
+      this.shippingCost = this.calculateShippingCost(this.totalWeight);
+
+      this.cdr.detectChanges();
     });
-
-    // لا حاجة لتحميل السلة يدويًا هنا، الـ constructor في الخدمة يقوم بذلك
-    // والـ subscribe أعلاه سيتولى التحديث الأول.
   }
 
-  calculateTotal(): void {
-    this.total = this.woocommerceService.getCartTotal();
+  // =========================
+  // 🔥 حساب الوزن الإجمالي
+  // =========================
+  calculateTotalWeight(): number {
+    return this.cartItems.reduce((total, item) => {
+      return total + (item.weight * item.quantity);
+    }, 0);
   }
 
+  // =========================
+  // 🔥 هل يوجد منتج بدون وزن؟
+  // =========================
+  hasProductWithoutWeight(): boolean {
+    return this.cartItems.some(item => {
+      return item.quantity > 0 && item.weight <= 0;
+    });
+  }
+
+  // =========================
+  // 🔥 حساب الشحن
+  // =========================
+  calculateShippingCost(weight: number): number {
+
+    // 🟡 شحن ثابت لو في منتج بدون وزن
+    if (this.hasProductWithoutWeight()) {
+      return 25;
+    }
+
+    // 🟢 شحن حسب الوزن
+    if (weight <= 0) return 0;
+
+    const stepWeight = 20; // كل 20 كجم
+    const stepPrice = 25;  // 25 ريال
+
+    return Math.ceil(weight / stepWeight) * stepPrice;
+  }
+
+  // =========================
+  // تحديث الكمية
+  // =========================
   updateQuantity(productId: number, quantity: number): void {
-    const newQuantity = Math.max(1, quantity); // التأكد من أن الكمية لا تقل عن 1
+    const newQuantity = Math.max(1, quantity);
     this.woocommerceService.updateCartQuantity(productId, newQuantity);
-
-    // لا داعي لإظهار توستر عند كل زيادة أو نقصان لتجنب إزعاج المستخدم
-    // التحديث في الواجهة كافٍ.
   }
 
+  // =========================
+  // حذف عنصر
+  // =========================
   removeItem(productId: number): void {
-    // لا نستخدم confirm() بعد الآن
     const removedItem = this.cartItems.find(item => item.id === productId);
     if (removedItem) {
       this.woocommerceService.removeFromCart(productId);
@@ -55,24 +100,34 @@ export class CartComponent implements OnInit {
     }
   }
 
+  // =========================
+  // مسح السلة
+  // =========================
   clearCart(): void {
-    // لا نستخدم confirm() بعد الآن
     if (this.cartItems.length > 0) {
       this.woocommerceService.clearCart();
       this.toastr.warning('تم مسح جميع المنتجات من السلة.', 'السلة فارغة');
     }
   }
 
-  getTaxAmount(): number {
-    return this.total * 0.15; // ضريبة 15%
-  }
+  // =========================
+  // الضريبة
+  // =========================
+  // getTaxAmount(): number {
+  //   return this.total * 0.15;
+  // }
 
+  // =========================
+  // الشحن (لـ HTML)
+  // =========================
   getShippingCost(): number {
-    // شحن مجاني للطلبات أكثر من 500 ريال، وإلا 50 ريال
-    return this.total > 500 || this.total === 0 ? 0 : 50;
+    return this.shippingCost;
   }
 
+  // =========================
+  // الإجمالي النهائي
+  // =========================
   getFinalTotal(): number {
-    return this.total + this.getTaxAmount() + this.getShippingCost();
+    return this.total + this.getShippingCost();
   }
 }

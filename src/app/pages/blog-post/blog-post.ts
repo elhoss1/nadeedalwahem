@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core'; // إضافة الأدوات المطلوبة
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { WoocommerceService } from '../../services/woocommerce.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-blog-post',
+  standalone: true, // تأكد أنها standalone
   imports: [CommonModule, RouterModule],
   templateUrl: './blog-post.html',
   styleUrl: './blog-post.scss',
@@ -15,34 +16,47 @@ export class BlogPostComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private woocommerceService: WoocommerceService
+    private woocommerceService: WoocommerceService,
+    private cdr: ChangeDetectorRef, // حقن أداة كشف التغييرات
+    private zone: NgZone           // حقن أداة التحكم في الـ Zone
   ) {}
 
   ngOnInit(): void {
-    const postId = this.route.snapshot.paramMap.get('id');
-    if (postId) {
-      this.loadPost(+postId);
-    }
+    this.route.paramMap.subscribe(params => {
+      const postId = params.get('id');
+      if (postId) {
+        this.loadPost(+postId);
+      }
+    });
   }
 
   loadPost(id: number): void {
     this.isLoading = true;
+    this.cdr.detectChanges(); // إظهار اللودر فوراً
+
     this.woocommerceService.getPost(id).subscribe({
       next: (data) => {
-        this.post = data;
-        this.isLoading = false;
+        // إجبار المتصفح على استلام البيانات داخل الـ Zone
+        this.zone.run(() => {
+          this.post = data;
+          this.isLoading = false;
+          this.cdr.detectChanges(); // إجبار Angular على رسم المقال فوراً
+        });
       },
       error: (err) => {
-        console.error('Error loading post:', err);
-        this.isLoading = false;
+        this.zone.run(() => {
+          console.error('Error loading post:', err);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        });
       }
     });
   }
 
   getPostImage(post: any): string {
-    if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
+    if (post?._embedded?.['wp:featuredmedia']?.[0]) {
       return post._embedded['wp:featuredmedia'][0].source_url;
     }
-    return '';
+    return 'assets/placeholder.png'; // يفضل وضع مسار لصورة افتراضية
   }
 }

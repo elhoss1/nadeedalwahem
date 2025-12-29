@@ -90,9 +90,11 @@ export class HomeComponent implements OnInit {
       name: product.name,
       price: priceValue,
       image: this.getProductImage(product),
-      quantity: 1
+      quantity: 1,
+      weight: parseFloat(product.weight || '0')
     });
     this.toastr.success(`تمت إضافة ${product.name}`, 'نجاح');
+    console.log(product.weight)
   }
 
   getProductImage(product: any): string {

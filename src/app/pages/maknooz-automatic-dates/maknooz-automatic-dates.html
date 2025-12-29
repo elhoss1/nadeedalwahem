@@ -12,31 +12,38 @@
     <div class="row">
       <!-- === الفلاتر والبحث (بتصميم جديد) === -->
       <aside class="col-lg-3">
-        <div class="filters-sidebar">
-          <!-- البحث -->
-          <div class="filter-group">
-            <label for="search" class="filter-label">ابحث عن تمر مفضل</label>
-            <div class="search-wrapper">
-              <input type="text" class="form-control search-input" placeholder="مثال: سكري، خلاص..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
-              <button class="search-btn" type="button" (click)="onSearch()">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
+  <div class="filters-sidebar mobile-row">
 
-          <!-- الترتيب -->
-          <div class="filter-group">
-            <label for="sort" class="filter-label">الترتيب حسب</label>
-            <div class="select-wrapper">
-              <select id="sort" class="form-select" [(ngModel)]="sortBy" (change)="onSortChange()">
-                <option value="date">الأحدث وصولاً</option>
-                <option value="price">السعر: من الأقل للأعلى</option>
-                <option value="popularity">الأكثر طلباً</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </aside>
+    <!-- البحث -->
+    <div class="filter-group search-group">
+      <label class="filter-label">ابحث عن تمر مفضل</label>
+      <div class="search-wrapper">
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="مثال: سكري، خلاص..."
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+        >
+        <button class="search-btn" type="button" (click)="onSearch()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- الترتيب -->
+    <div class="filter-group sort-group">
+      <label class="filter-label">الترتيب حسب</label>
+      <select class="form-select" [(ngModel)]="sortBy" (change)="onSortChange()">
+        <option value="date">الأحدث وصولاً</option>
+        <option value="price">السعر: من الأقل للأعلى</option>
+        <option value="popularity">الأكثر طلباً</option>
+      </select>
+    </div>
+
+  </div>
+</aside>
+
 
       <!-- === قائمة المنتجات (بتصميم جديد) === -->
       <main class="col-lg-9">

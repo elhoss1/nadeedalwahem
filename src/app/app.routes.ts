@@ -31,6 +31,11 @@ export const routes: Routes = [
       loadComponent: () => import("./pages/maamoul/maamoul").then(m => m.Maamoul)
     },
 
+    {
+      path: 'services',
+      loadComponent: () => import("./pages/ourservices/ourservices").then(m => m.Ourservices)
+    },
+
     { path: 'products/:id', loadComponent: ()=> import("./components/product-detail/product-detail").then(m=>m.ProductDetailComponent) },
     { path: 'blog', loadComponent:()=> import("./pages/blog/blog").then(m=>m.BlogComponent) },
     { path: 'blog/:id', loadComponent:()=>import('./pages/blog-post/blog-post').then(m=>m.BlogPostComponent) },
