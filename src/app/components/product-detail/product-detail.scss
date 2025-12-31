@@ -225,3 +225,12 @@ $font-family-base: 'Cairo', 'Segoe UI', sans-serif;
 @media (max-width: 991px) {
   .details-container { margin-top: 2rem; }
 }
+
+@media (max-width: 576px) {
+  .related-products-section {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr); // 👈 منتجين في السطر على الجوال
+      gap: 1rem;
+    }
+  }
+}
