@@ -68,7 +68,14 @@
       <div class="products-grid">
         <!-- هنا نستخدم نفس تصميم بطاقة المنتج من الصفحات الأخرى -->
         <div class="product-card" *ngFor="let related of relatedProducts">
-          <a [routerLink]="['/products', related.id]">
+          <a
+            [routerLink]="[
+              '/products',
+              related.id,
+              slugify(related.name)
+            ]"
+          >
+
             <div class="product-image-wrapper">
               <img [src]="related.images?.[0]?.src || '/placeholder.png'" class="product-image" [alt]="related.name">
             </div>

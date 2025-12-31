@@ -21,7 +21,7 @@ export class MaknoozAutomaticDates implements OnInit {
   sortBy: string = 'date';
 
   // المعرف الثابت للفئة لهذه الصفحة
-  private readonly PAGE_CATEGORY_ID = 48;
+  private readonly PAGE_CATEGORY_ID = 183;
 
   constructor(
     private woocommerceService: WoocommerceService,

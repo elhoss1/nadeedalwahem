@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
 
   sections = [
     { id: 34, name: 'تمور خام', path: '/Rawdates', products: [] as any[] },
-    { id: 48, name: 'مكنوز آلي', path: '/maknoozautomaticdates', products: [] as any[] },
+    { id: 183, name: 'مكنوز آلي', path: '/maknoozautomaticdates', products: [] as any[] },
     { id: 21, name: 'تعبئة نثري', path: '/Surveydatesprose', products: [] as any[] },
     { id: 169, name: 'المعمول', path: '/Maamoul', products: [] as any[] },
   ];
@@ -99,4 +99,5 @@ export class HomeComponent implements OnInit {
   getProductImage(product: any): string {
     return product.images?.[0]?.src || 'assets/placeholder.png';
   }
+
 }
