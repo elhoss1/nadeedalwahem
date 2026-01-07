@@ -47,6 +47,11 @@ export class BlogComponent implements OnInit {
     });
   }
 
+  onImageLoad() {
+  this.cdr.detectChanges();
+}
+
+
   getPostImage(post: any): string {
     // استخدام Safe Navigation (?.) لتجنب أي خطأ يعطل الصفحة
     if (post?._embedded?.['wp:featuredmedia']?.[0]) {

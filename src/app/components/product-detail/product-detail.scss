@@ -236,3 +236,49 @@ $font-family-base: 'Cairo', 'Segoe UI', sans-serif;
 }
 
 .riyal-svg { display: inline-block; width: 1em; height: 1.1em; vertical-align: -0.1em; margin-right: 2px; }
+
+
+/* ===================================
+   أنماط قسم الوصف الطويل
+   =================================== */
+
+.long-description-section {
+  margin-top: 40px; /* إضافة مسافة علوية لفصله عن المحتوى السابق */
+  padding-top: 30px; /* إضافة مسافة داخلية علوية */
+  border-top: 1px solid #e0e0e0; /* خط فاصل علوي أنيق */
+  background-color: #f9f9f9; /* لون خلفية خفيف لتمييز القسم */
+  padding: 25px; /* مساحة داخلية من جميع الجوانب */
+  border-radius: 8px; /* حواف دائرية للقسم */
+  margin-bottom: 40px; /* مسافة سفلية قبل قسم "منتجات ذات صلة" */
+}
+
+.long-description-section .section-title {
+  font-size: 1.8rem; /* حجم خط كبير وواضح للعنوان */
+  font-weight: 700; /* خط عريض */
+  color: #333; /* لون داكن للعنوان */
+  margin-bottom: 20px; /* مسافة أسفل العنوان */
+  padding-bottom: 10px; /* مسافة أسفل العنوان */
+  border-bottom: 2px solid #007bff; /* خط سفلي مميز للعنوان (يمكنك تغيير اللون) */
+  display: inline-block; /* لجعل الخط السفلي يمتد فقط تحت النص */
+}
+
+.long-description-section div[innerHTML] {
+  font-size: 1rem; /* حجم خط مناسب للنصوص الطويلة */
+  line-height: 1.8; /* ارتفاع سطر مريح للقراءة */
+  color: #555; /* لون نص مريح للعين */
+}
+
+/* تنسيقات إضافية داخل الوصف نفسه (إذا كان يحتوي على HTML) */
+.long-description-section p {
+  margin-bottom: 15px; /* مسافة بين الفقرات */
+}
+
+.long-description-section ul,
+.long-description-section ol {
+  padding-right: 20px; /* مسافة بادئة للقوائم (مناسبة للغة العربية) */
+  margin-bottom: 15px;
+}
+
+.long-description-section li {
+  margin-bottom: 8px; /* مسافة بين عناصر القائمة */
+}

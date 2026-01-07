@@ -9,8 +9,8 @@
 
     <!-- حالة التحميل -->
     <div *ngIf="isLoading" class="loading-state">
-      <div class="spinner"></div>
-      <p>جاري تحميل المقالات...</p>
+          <div class="spinner"></div>
+          <p>جاري تحميل الاخبار...</p>
     </div>
 
     <!-- شبكة المقالات -->
@@ -20,7 +20,8 @@
 
           <!-- غلاف الصورة -->
           <div class="post-image-wrapper">
-            <img [src]="getPostImage(post)" [alt]="post.title.rendered" class="post-image">
+            <img [src]="getPostImage(post)" [alt]="post.title.rendered" class="post-image" loading="eager"
+          (load)="onImageLoad()">
           </div>
 
           <!-- محتوى البطاقة -->

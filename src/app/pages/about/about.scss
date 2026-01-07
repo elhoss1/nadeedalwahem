@@ -1,165 +1,224 @@
-.about-page {
-  padding: 2rem 0;
-  min-height: calc(100vh - 200px);
-
-  .page-title {
-    text-align: center;
-    color: #5c2e2e;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    font-size: 2.5rem;
-  }
-
-  .about-content {
-    .about-section {
-      margin-bottom: 3rem;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-      h2 {
-        color: #5c2e2e;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #c4a747;
-      }
-
-      p {
-        color: #666;
-        line-height: 1.8;
-        margin-bottom: 1rem;
-        font-size: 1rem;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-
-      .values-list {
-        list-style: none;
-        padding: 0;
-
-        li {
-          padding: 0.75rem 0;
-          color: #666;
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          line-height: 1.6;
-
-          i {
-            color: #c4a747;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-          }
-
-          strong {
-            color: #5c2e2e;
-          }
-        }
-      }
-
-      .reasons-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        margin-top: 1rem;
-
-        .reason-card {
-          text-align: center;
-          padding: 1.5rem;
-          background: #f5f1e8;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-
-          &:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-          }
-
-          i {
-            font-size: 2.5rem;
-            color: #c4a747;
-            margin-bottom: 1rem;
-          }
-
-          h3 {
-            color: #5c2e2e;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-          }
-
-          p {
-            color: #666;
-            font-size: 0.95rem;
-            margin: 0;
-          }
-        }
-      }
-
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 2rem;
-        margin-top: 1rem;
-
-        .stat-card {
-          text-align: center;
-          padding: 2rem;
-          background: linear-gradient(135deg, #5c2e2e 0%, #8b4545 100%);
-          color: #fff;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-
-          &:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(92, 46, 46, 0.3);
-          }
-
-          h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #c4a747;
-          }
-
-          p {
-            color: #ddd;
-            margin: 0;
-            font-size: 0.95rem;
-          }
-        }
-      }
-    }
-  }
+/* =========================================
+   Global Styles & Variables
+   ========================================= */
+:root {
+  --primary-color: #8B4513; /* لون بني دافئ مستوحى من التمور */
+  --secondary-color: #D2B48C; /* لون بيج فاتح للخلفيات */
+  --text-color: #333;
+  --card-bg: #FFFFFF;
+  --icon-color: #c88c4c;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
 }
 
+body {
+  font-family: 'Cairo', sans-serif; /* استخدام خط عربي جميل مثل Cairo */
+  direction: rtl;
+  background-color: #f9f6f2; /* خلفية بلون بيج خفيف جداً */
+  color: var(--text-color);
+  line-height: 1.8;
+}
+
+/* =========================================
+   Main Page Structure
+   ========================================= */
+.about-page {
+  padding: 60px 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 2.8rem;
+  color: var(--primary-color);
+  margin-bottom: 50px;
+  font-weight: 700;
+  position: relative;
+}
+
+/* خط زخرفي تحت العنوان */
+.page-title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 3px;
+  background-color: var(--icon-color);
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+.about-content {
+  display: grid;
+  gap: 30px;
+}
+
+/* =========================================
+   Card & Section Styling
+   ========================================= */
+.about-section.card {
+  background-color: var(--card-bg);
+  padding: 35px 40px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-section.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.about-section h2 {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 10px;
+}
+
+.about-section p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* =========================================
+   Specific Sections Styling
+   ========================================= */
+
+/* --- Values List --- */
+.values-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.values-list li {
+  display: flex;
+  align-items: flex-start;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+.values-list .fa-check-circle {
+  color: var(--icon-color);
+  font-size: 1.4rem;
+  margin-left: 15px; /* لإنشاء مسافة بين الأيقونة والنص */
+  margin-top: 5px;
+}
+
+/* --- Reasons Grid --- */
+.reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  text-align: center;
+}
+
+.reason-card {
+  padding: 25px;
+  border: 1px solid #eee;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.reason-card:hover {
+  background-color: var(--primary-color);
+}
+
+.reason-card i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  transition: color 0.3s;
+}
+
+
+
+.reason-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.reason-card p {
+  font-size: 1rem;
+  color: #666;
+  transition: color 0.3s;
+}
+
+
+
+/* --- Contact Info Grid --- */
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px 25px;
+  font-size: 1.1rem;
+}
+
+.contact-item {
+  background-color: #f9f9f9;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border-right: 4px solid var(--icon-color);
+}
+
+.contact-item strong {
+  color: var(--primary-color);
+}
+
+/* --- Downloads Grid --- */
+.downloads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.download-item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  background-color: var(--primary-color);
+  color: rgba(88, 52, 4, 0.816);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-item a:hover {
+  background-color: #6d3710; /* لون أغمق عند المرور */
+  transform: translateY(-3px);
+  color: white;
+}
+
+.download-item .fa-file-pdf {
+  font-size: 1.3rem;
+  margin-left: 10px;
+}
+
+/* =========================================
+   Responsive Design
+   ========================================= */
 @media (max-width: 768px) {
-  .about-page {
-    .page-title {
-      font-size: 1.8rem;
-    }
+  .page-title {
+    font-size: 2.2rem;
+  }
 
-    .about-content {
-      .about-section {
-        padding: 1.5rem;
+  .about-section.card {
+    padding: 25px;
+  }
 
-        h2 {
-          font-size: 1.3rem;
-        }
-
-        .reasons-grid {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        .stats-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1rem;
-        }
-      }
-    }
+  .contact-info-grid,
+  .reasons-grid,
+  .downloads-grid {
+    grid-template-columns: 1fr; /* عمود واحد في الشاشات الصغيرة */
   }
 }

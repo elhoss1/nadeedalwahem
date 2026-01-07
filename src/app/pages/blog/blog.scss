@@ -133,3 +133,29 @@ $font-family-base: 'Cairo', 'Segoe UI', sans-serif;
 .loading-state {
   // ... (نفس كود التحميل السابق)
 }
+
+
+.loading-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  color: $text-color;
+  .empty-icon {
+    font-size: 4rem;
+    color: $secondary-color;
+    margin-bottom: 1rem;
+  }
+}
+
+// --- أيقونة التحميل ---
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 8px solid $border-color;
+  border-top-color: $primary-color;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
