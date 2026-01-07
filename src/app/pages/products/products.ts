@@ -40,7 +40,7 @@ export class ProductsComponent implements OnInit {
     this.cdr.detectChanges();
 
     let params: any = {
-      per_page: 20,
+      per_page: 100,
       search: this.searchTerm,
       orderby: this.sortBy,
       order: 'asc'

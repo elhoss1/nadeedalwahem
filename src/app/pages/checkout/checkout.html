@@ -1,147 +1,196 @@
 <div class="checkout-page">
-  <div class="container">
-    <header class="page-header">
-      <h1 class="page-title">إتمام الشراء</h1>
+  <div class="container py-5">
+    <!-- Header Section -->
+    <header class="checkout-header mb-5 text-center">
+      <h1 class="display-5 fw-bold text-gradient">إتمام عملية الشراء</h1>
+      <p class="text-muted">يرجى إدخال تفاصيل الشحن واختيار طريقة الدفع المفضلة لديك</p>
+      <div class="stepper-wrapper mt-4">
+        <div class="stepper-item completed">
+          <div class="step-counter"><i class="fas fa-shopping-cart"></i></div>
+          <div class="step-name">السلة</div>
+        </div>
+        <div class="stepper-item active">
+          <div class="step-counter"><i class="fas fa-truck"></i></div>
+          <div class="step-name">الشحن والدفع</div>
+        </div>
+        <div class="stepper-item">
+          <div class="step-counter"><i class="fas fa-check"></i></div>
+          <div class="step-name">تأكيد الطلب</div>
+        </div>
+      </div>
     </header>
 
-    <!-- حالة نجاح الطلب -->
-    <div *ngIf="orderPlaced" class="order-success-container">
-      <div class="order-success-content">
-        <i class="fas fa-check-circle success-icon"></i>
-        <h2>تم استلام طلبك بنجاح!</h2>
-        <p>شكراً لك على ثقتك في نضيد الوشم. سيتم معالجة طلبك وتجهيزه للشحن في أقرب وقت.</p>
-        <a [routerLink]="['/']" class="btn btn-primary btn-lg mt-3">العودة للرئيسية</a>
+    <!-- Success State -->
+    <div *ngIf="orderPlaced" class="status-card success-card animate__animated animate__fadeIn">
+      <div class="card-body text-center p-5">
+        <div class="icon-circle bg-success-light mb-4">
+          <i class="fas fa-check-circle text-success"></i>
+        </div>
+        <h2 class="fw-bold mb-3">تم استلام طلبك بنجاح!</h2>
+        <p class="text-muted mb-4">شكراً لك على ثقتك في نضيد الوشم. سيتم معالجة طلبك وتجهيزه للشحن في أقرب وقت.</p>
+        <a [routerLink]="['/']" class="btn btn-primary-gradient btn-lg px-5 rounded-pill">العودة للرئيسية</a>
       </div>
     </div>
 
-    <!-- حالة السلة الفارغة -->
-    <div *ngIf="!orderPlaced && cartItems.length === 0" class="empty-cart-container">
-      <div class="empty-cart-content">
-        <i class="fas fa-exclamation-triangle warning-icon"></i>
-        <h3>لا يمكن إتمام الشراء</h3>
-        <p>سلتك فارغة حالياً. يرجى إضافة بعض المنتجات أولاً لتتمكن من المتابعة.</p>
-        <a [routerLink]="['/products']" class="btn btn-primary btn-lg mt-3">تصفح المنتجات</a>
+    <!-- Empty Cart State -->
+    <div *ngIf="!orderPlaced && cartItems.length === 0" class="status-card warning-card animate__animated animate__fadeIn">
+      <div class="card-body text-center p-5">
+        <div class="icon-circle bg-warning-light mb-4">
+          <i class="fas fa-shopping-basket text-warning"></i>
+        </div>
+        <h3 class="fw-bold mb-3">سلة المشتريات فارغة</h3>
+        <p class="text-muted mb-4">يبدو أنك لم تضف أي منتجات بعد. تصفح منتجاتنا الرائعة وابدأ التسوق الآن!</p>
+        <a [routerLink]="['/products']" class="btn btn-primary-gradient btn-lg px-5 rounded-pill">تصفح المنتجات</a>
       </div>
     </div>
 
-    <!-- فورم إتمام الشراء -->
-    <form *ngIf="!orderPlaced && cartItems.length > 0" (ngSubmit)="placeOrder()">
+    <!-- Checkout Form -->
+    <form *ngIf="!orderPlaced && cartItems.length > 0" (ngSubmit)="placeOrder()" class="checkout-form">
       <div class="row g-4">
-        <!-- الجزء الأيسر: تفاصيل الشحن والدفع -->
-        <div class="col-lg-7">
-          <div class="checkout-section">
-            <h2 class="section-title">1. تفاصيل الشحن</h2>
-            <div *ngIf="orderError" class="alert alert-danger">{{ orderError }}</div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="firstName" class="form-label">الاسم الأول</label>
-                <input type="text" id="firstName" class="form-control" [(ngModel)]="checkoutForm.firstName" name="firstName" required>
+        <!-- Right Column: Shipping & Payment (In RTL, this is the first column visually) -->
+        <div class="col-lg-8">
+          <!-- Shipping Section -->
+          <div class="glass-card mb-4">
+            <div class="card-header-custom">
+              <i class="fas fa-map-marker-alt"></i>
+              <h2 class="h5 mb-0">تفاصيل الشحن</h2>
+            </div>
+            <div class="card-body-custom">
+              <div *ngIf="orderError" class="alert alert-danger-custom mb-4 animate__animated animate__shakeX">
+                <i class="fas fa-exclamation-circle"></i> {{ orderError }}
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="lastName" class="form-label">الاسم الأخير</label>
-                <input type="text" id="lastName" class="form-control" [(ngModel)]="checkoutForm.lastName" name="lastName" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">البريد الإلكتروني</label>
-              <input type="email" id="email" class="form-control" [(ngModel)]="checkoutForm.email" name="email" required>
-            </div>
-            <div class="mb-3">
-              <label for="phone" class="form-label">رقم الجوال</label>
-              <input type="tel" id="phone" class="form-control" [(ngModel)]="checkoutForm.phone" name="phone" required>
-            </div>
-            <div class="mb-3">
-              <label for="address" class="form-label">العنوان التفصيلي (الحي، الشارع، رقم المنزل)</label>
-              <input type="text" id="address" class="form-control" [(ngModel)]="checkoutForm.address" name="address" required>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="city" class="form-label">المدينة</label>
-                <input type="text" id="city" class="form-control" [(ngModel)]="checkoutForm.city" name="city" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="country" class="form-label">الدولة</label>
-                <input type="text" id="country" class="form-control" value="المملكة العربية السعودية" disabled>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="text" id="firstName" class="form-control custom-input" [(ngModel)]="checkoutForm.firstName" name="firstName" placeholder="الاسم الأول" required>
+                    <label for="firstName">الاسم الأول</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="text" id="lastName" class="form-control custom-input" [(ngModel)]="checkoutForm.lastName" name="lastName" placeholder="الاسم الأخير" required>
+                    <label for="lastName">الاسم الأخير</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="email" id="email" class="form-control custom-input" [(ngModel)]="checkoutForm.email" name="email" placeholder="البريد الإلكتروني" required>
+                    <label for="email">البريد الإلكتروني</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="tel" id="phone" class="form-control custom-input" [(ngModel)]="checkoutForm.phone" name="phone" placeholder="رقم الجوال" required>
+                    <label for="phone">رقم الجوال</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" id="address" class="form-control custom-input" [(ngModel)]="checkoutForm.address" name="address" placeholder="العنوان التفصيلي" required>
+                    <label for="address">العنوان التفصيلي (الحي، الشارع، رقم المنزل)</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="text" id="city" class="form-control custom-input" [(ngModel)]="checkoutForm.city" name="city" placeholder="المدينة" required>
+                    <label for="city">المدينة</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="text" id="country" class="form-control custom-input" value="المملكة العربية السعودية" disabled>
+                    <label for="country">الدولة</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="checkout-section mt-4">
-            <h2 class="section-title">2. طريقة الدفع</h2>
-            <div class="payment-options">
-              <div class="form-check payment-option">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" [(ngModel)]="checkoutForm.paymentMethod">
-                <label class="form-check-label" for="cod">
-                  <i class="fas fa-money-bill-wave"></i>
-                  <span>الدفع عند الاستلام</span>
-                  <small>ادفع نقدًا لمندوب التوصيل عند استلام طلبك.</small>
-                </label>
-              </div>
-              <div class="form-check payment-option disabled">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="creditCard" [(ngModel)]="checkoutForm.paymentMethod" disabled>
-                <label class="form-check-label" for="creditCard">
-                  <i class="fas fa-credit-card"></i>
-                  <span>بطاقة ائتمانية</span>
-                  <small>هذه الخدمة ستكون متاحة قريباً.</small>
+          <!-- Payment Section -->
+          <div class="glass-card">
+            <div class="card-header-custom">
+              <i class="fas fa-credit-card"></i>
+              <h2 class="h5 mb-0">طريقة الدفع</h2>
+            </div>
+            <div class="card-body-custom">
+              <div class="payment-grid">
+                <label class="payment-card" [class.selected]="checkoutForm.paymentMethod === 'moyasar'">
+                  <input type="radio" name="paymentMethod" value="moyasar" [(ngModel)]="checkoutForm.paymentMethod" class="d-none">
+                  <div class="payment-card-content">
+                    <div class="payment-icon">
+                      <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="payment-details">
+                      <span class="payment-title">بطاقة ائتمانية</span>
+                      <span class="payment-desc">مدى، فيزا، ماستركارد (عبر ميسّر)</span>
+                    </div>
+                    <div class="payment-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
                 </label>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- الجزء الأيمن: ملخص الطلب -->
-        <div class="col-lg-5">
-          <div class="order-summary">
-            <h2 class="section-title">ملخص طلبك</h2>
-            <div class="summary-items-list">
-              <div class="summary-item" *ngFor="let item of cartItems">
-                <img [src]="item.image" [alt]="item.name" class="item-thumbnail">
-                <div class="item-info">
-                  <span class="item-name">{{ item.name }}</span>
-                  <span class="item-quantity">الكمية: {{ item.quantity }}</span>
+        <!-- Left Column: Order Summary (In RTL, this is the second column visually) -->
+        <div class="col-lg-4">
+          <div class="summary-sidebar sticky-top" style="top: 2rem;">
+            <div class="glass-card">
+              <div class="card-header-custom">
+                <i class="fas fa-receipt"></i>
+                <h2 class="h5 mb-0">ملخص الطلب</h2>
+              </div>
+              <div class="card-body-custom">
+                <div class="summary-items-scroll">
+                  <div class="summary-item-modern" *ngFor="let item of cartItems">
+                    <div class="item-img-wrapper">
+                      <img [src]="item.image" [alt]="item.name">
+                      <span class="item-badge">{{ item.quantity }}</span>
+                    </div>
+                    <div class="item-details">
+                      <h6 class="item-name-modern">{{ item.name }}</h6>
+                      <p class="item-price-modern">{{ item.price * item.quantity }} <span class="currency">ر.س</span></p>
+                    </div>
+                  </div>
                 </div>
-                <span class="item-price">{{ item.price * item.quantity }}
-                  <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
-                    <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
-                    <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
-                  </svg>
-                </span>
+
+                <div class="summary-divider"></div>
+
+                <div class="calculation-rows">
+                  <div class="calc-row">
+                    <span>إجمالي المنتجات</span>
+                    <span>{{ cartTotal }} <span class="currency">ر.س</span></span>
+                  </div>
+                  <div class="calc-row">
+                    <span>تكلفة الشحن</span>
+                    <span class="text-success">+ {{ shippingCost }} <span class="currency">ر.س</span></span>
+                  </div>
+                  <div class="calc-row total-row mt-3">
+                    <span>المجموع الكلي</span>
+                    <span class="total-amount">{{ grandTotal }} <span class="currency">ر.س</span></span>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary-gradient btn-lg w-100 mt-4 py-3 rounded-pill shadow-sm" [disabled]="isSubmitting">
+                  <div *ngIf="!isSubmitting" class="d-flex align-items-center justify-content-center">
+                    <i class="fas fa-lock-alt"></i>
+                    <span class="ms-2">تأكيد الطلب والدفع</span>
+                  </div>
+                  <div *ngIf="isSubmitting" class="d-flex align-items-center justify-content-center">
+                    <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+                    <span>جاري المعالجة...</span>
+                  </div>
+                </button>
+
+                <div class="secure-badge mt-3 text-center">
+                  <i class="fas fa-shield-check text-success"></i>
+                  <small class="text-muted ms-1">دفع آمن ومحمي 100%</small>
+                </div>
               </div>
             </div>
-            <div class="summary-calculation">
-              <div class="summary-row">
-                <span>إجمالي المنتجات</span>
-                <span>{{ cartTotal}}
-                  <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
-                    <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
-                    <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
-                  </svg>
-                </span>
-              </div>
-              <div class="summary-row">
-                <span>تكلفة الشحن</span>
-                <span>{{ shippingCost}}
-                  <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
-                    <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
-                    <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
-                  </svg>
-                </span>
-              </div>
-              <hr>
-              <div class="summary-row grand-total">
-                <span>المجموع الكلي</span>
-                <span>{{ grandTotal}}
-                  <svg class="riyal-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
-                    <path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
-                    <path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
-                  </svg>
-                </span>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg w-100 mt-4" [disabled]="isSubmitting">
-              <span *ngIf="!isSubmitting"><i class="fas fa-lock"></i> تأكيد الطلب الآن</span>
-              <span *ngIf="isSubmitting"><i class="fas fa-spinner fa-spin"></i> جاري إتمام الطلب...</span>
-            </button>
           </div>
         </div>
       </div>

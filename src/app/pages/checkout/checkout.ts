@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, NgZone, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WoocommerceService } from '../../services/woocommerce.service';
 import { RouterLink } from '@angular/router';
@@ -16,10 +16,9 @@ export class CheckoutComponent implements OnInit {
   cartItems: any[] = [];
   cartTotal: number = 0;
 
-  // 🔥 الوزن والشحن
+  // الوزن والشحن
   totalWeight: number = 0;
   shippingCost: number = 0;
-
   grandTotal: number = 0;
 
   checkoutForm = {
@@ -30,7 +29,7 @@ export class CheckoutComponent implements OnInit {
     address: '',
     city: '',
     country: 'السعودية',
-    paymentMethod: 'cod'
+    paymentMethod: 'moyasar' // القيمة الافتراضية هي الدفع الإلكتروني
   };
 
   isSubmitting = false;
@@ -40,72 +39,64 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private woocommerceService: WoocommerceService,
     private cdr: ChangeDetectorRef,
-    private zone: NgZone
+    private zone: NgZone,
+    // =================================================================
+    // 🔥 جديد: حقن PLATFORM_ID للتحقق من بيئة المتصفح
+    // =================================================================
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
     this.woocommerceService.cart$.subscribe(items => {
       this.zone.run(() => {
         this.cartItems = items;
-
-        // إجمالي المنتجات
         this.cartTotal = this.woocommerceService.getCartTotal();
-
-        // حساب الوزن
         this.totalWeight = this.calculateTotalWeight();
-
-        // حساب الشحن (ثابت أو حسب الوزن)
         this.shippingCost = this.calculateShippingCost(this.totalWeight);
-
-        // الإجمالي النهائي
         this.grandTotal = this.cartTotal + this.shippingCost;
-
         this.cdr.detectChanges();
       });
     });
   }
 
   // =========================
-  // 🔥 هل يوجد منتج بدون وزن؟
+  // دوال حساب الوزن والشحن (تبقى كما هي)
   // =========================
   hasProductWithoutWeight(): boolean {
-  return this.cartItems.some(item => {
-    return item.quantity > 0 && item.weight <= 0;
-  });
-}
+    return this.cartItems.some(item => item.quantity > 0 && !item.weight);
+  }
 
-
-
-  // =========================
-  // 🔥 حساب الوزن الإجمالي
-  // =========================
   calculateTotalWeight(): number {
-    return this.cartItems.reduce((total, item) => {
-      return total + (item.weight * item.quantity);
-    }, 0);
+    return this.cartItems.reduce((total, item) => total + ((item.weight || 0) * item.quantity), 0);
   }
 
-
-
-  // =========================
-  // 🔥 حساب الشحن
-  // =========================
   calculateShippingCost(weight: number): number {
-
-  if (this.hasProductWithoutWeight()) {
-    return 25;
+    if (this.hasProductWithoutWeight()) {
+      return 25; // شحن ثابت إذا كان هناك منتج بدون وزن
+    }
+    const stepWeight = 20;
+    const stepPrice = 25;
+    if (weight === 0) return 0; // لا توجد تكلفة شحن إذا كانت السلة فارغة
+    return Math.ceil(weight / stepWeight) * stepPrice;
   }
 
-  const stepWeight = 20;
-  const stepPrice = 25;
-
-  return Math.ceil(weight / stepWeight) * stepPrice;
-}
-
-
   // =========================
-  // إنشاء الطلب
+  // التحقق من صحة النموذج (يبقى كما هو)
   // =========================
+  validateForm(): boolean {
+    return (
+      this.checkoutForm.firstName.trim() !== '' &&
+      this.checkoutForm.lastName.trim() !== '' &&
+      this.checkoutForm.email.trim() !== '' &&
+      this.checkoutForm.phone.trim() !== '' &&
+      this.checkoutForm.address.trim() !== '' &&
+      this.checkoutForm.city.trim() !== ''
+    );
+  }
+
+  // =================================================================
+  // 🔥 تعديل كبير: دالة إنشاء الطلب المحدثة بالكامل
+  // =================================================================
   placeOrder(): void {
     if (!this.validateForm()) {
       this.orderError = 'يرجى ملء جميع الحقول المطلوبة.';
@@ -117,18 +108,14 @@ export class CheckoutComponent implements OnInit {
     this.orderError = '';
     this.cdr.detectChanges();
 
-    const lineItems = this.cartItems.map(item => ({
-      product_id: item.id,
-      quantity: item.quantity
-    }));
+    const isOnlinePayment = this.checkoutForm.paymentMethod === 'moyasar';
 
     const orderData = {
-      payment_method: this.checkoutForm.paymentMethod,
-      payment_method_title: 'الدفع عند الاستلام',
-      set_paid: false,
+      payment_method: isOnlinePayment ? 'moyasar' : 'cod',
+      payment_method_title: isOnlinePayment ? 'الدفع الإلكتروني (ميسّر)' : 'الدفع عند الاستلام',
+      set_paid: false, // سيتم تحديثها لاحقاً عبر الـ webhook للدفع الإلكتروني
       billing: {
         first_name: this.checkoutForm.firstName,
-        last_name: this.checkoutForm.lastName,
         address_1: this.checkoutForm.address,
         city: this.checkoutForm.city,
         country: this.checkoutForm.country,
@@ -137,15 +124,17 @@ export class CheckoutComponent implements OnInit {
       },
       shipping: {
         first_name: this.checkoutForm.firstName,
-        last_name: this.checkoutForm.lastName,
         address_1: this.checkoutForm.address,
         city: this.checkoutForm.city,
         country: this.checkoutForm.country
       },
-      line_items: lineItems,
+      line_items: this.cartItems.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      })),
       shipping_lines: [
         {
-          method_id: 'weight_based',
+          method_id: 'weight_based_shipping',
           method_title: this.hasProductWithoutWeight()
             ? 'شحن ثابت'
             : `شحن حسب الوزن (${this.totalWeight.toFixed(1)} كجم)`,
@@ -154,34 +143,60 @@ export class CheckoutComponent implements OnInit {
       ]
     };
 
+    // 1. إنشاء الطلب في ووكومرس أولاً
     this.woocommerceService.createOrder(orderData).subscribe({
-      next: () => {
-        this.zone.run(() => {
-          this.isSubmitting = false;
-          this.orderPlaced = true;
-          this.woocommerceService.clearCart();
-          this.cdr.detectChanges();
+      next: (createdOrder) => {
+        // إذا كان الدفع عند الاستلام، تكون العملية قد انتهت بنجاح هنا
+        if (!isOnlinePayment) {
+          this.handleCodSuccess();
+          return;
+        }
+
+        // 2. إذا كان الدفع إلكترونياً، قم بإنشاء رابط الدفع من ميسّر
+        const orderId = createdOrder.id;
+        const totalAmount = parseFloat(createdOrder.total);
+
+        this.woocommerceService.createMoyasarPayment(totalAmount, orderId).subscribe({
+          next: (paymentResponse) => {
+            if (paymentResponse && paymentResponse.success && paymentResponse.payment_url) {
+              // 3. توجيه المستخدم إلى صفحة الدفع الخاصة بميسّر
+              if (isPlatformBrowser(this.platformId)) {
+                window.location.href = paymentResponse.payment_url;
+              }
+            } else {
+              this.handleError('لم نتمكن من إنشاء رابط الدفع. يرجى المحاولة مرة أخرى أو اختيار الدفع عند الاستلام.');
+            }
+          },
+          error: (err) => {
+            console.error('Moyasar payment creation error:', err);
+            this.handleError('حدث خطأ أثناء الاتصال ببوابة الدفع. يرجى التحقق من اتصالك بالإنترنت.');
+          }
         });
       },
-      error: (error) => {
-        this.zone.run(() => {
-          this.isSubmitting = false;
-          this.orderError = 'حدث خطأ أثناء إتمام الطلب.';
-          console.error(error);
-          this.cdr.detectChanges();
-        });
+      error: (err) => {
+        console.error('Order creation error:', err);
+        this.handleError('حدث خطأ أثناء إنشاء طلبك. قد تكون بعض البيانات غير صحيحة.');
       }
     });
   }
 
-  validateForm(): boolean {
-    return (
-      this.checkoutForm.firstName.trim() !== '' &&
-      this.checkoutForm.lastName.trim() !== '' &&
-      this.checkoutForm.email.trim() !== '' &&
-      this.checkoutForm.phone.trim() !== '' &&
-      this.checkoutForm.address.trim() !== '' &&
-      this.checkoutForm.city.trim() !== ''
-    );
+  // =================================================================
+  // 🔥 جديد: دوال مساعدة لمعالجة النجاح والخطأ
+  // =================================================================
+  private handleCodSuccess(): void {
+    this.zone.run(() => {
+      this.isSubmitting = false;
+      this.orderPlaced = true;
+      this.woocommerceService.clearCart();
+      this.cdr.detectChanges();
+    });
+  }
+
+  private handleError(message: string): void {
+    this.zone.run(() => {
+      this.isSubmitting = false;
+      this.orderError = message;
+      this.cdr.detectChanges();
+    });
   }
 }

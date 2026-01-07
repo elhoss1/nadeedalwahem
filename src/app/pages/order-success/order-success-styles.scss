@@ -1,0 +1,547 @@
+// ===== متغيرات الألوان والهوية البصرية =====
+$primary-color: #8a5a2b;
+$primary-light: #a67c52;
+$primary-dark: #6b4423;
+$secondary-color: #c4a747;
+$secondary-light: #d4b85f;
+$background-color: #fdfaf5;
+$text-color: #4a3f35;
+$text-light: #6c757d;
+$card-bg: #ffffff;
+$border-color: #e0d7c7;
+$success-color: #10b981;
+$warning-color: #f59e0b;
+$error-color: #ef4444;
+
+// ===== الظلال =====
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 5px 20px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+
+// ===== الخطوط =====
+$font-family-headings: 'Cairo', 'Segoe UI', sans-serif;
+$font-family-base: 'Cairo', 'Segoe UI', sans-serif;
+
+// ===== الانتقالات =====
+$transition-fast: 0.2s ease;
+$transition-base: 0.3s ease;
+$transition-smooth: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// ===== إعدادات عامة للصفحة =====
+body {
+  font-family: $font-family-base;
+  background: linear-gradient(135deg, $background-color 0%, #f5f0e8 100%);
+  color: $text-color;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+// ===== الخلفية المتحركة =====
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: $secondary-color;
+  animation: fall 3s ease-in forwards;
+
+  &.gold {
+    background: $secondary-color;
+  }
+
+  &.brown {
+    background: $primary-color;
+  }
+
+  &.light {
+    background: $secondary-light;
+  }
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+// ===== صفحة النجاح =====
+.success-page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+// ===== البطاقة الرئيسية =====
+.success-card {
+  background: $card-bg;
+  border-radius: 25px;
+  padding: 4rem 3rem;
+  box-shadow: $shadow-lg;
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+  animation: slideUp 0.8s $transition-smooth;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba($secondary-color, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// ===== الأيقونة =====
+.success-icon-wrapper {
+  margin-bottom: 2rem;
+}
+
+.success-icon {
+  font-size: 6rem;
+  color: $success-color;
+  animation: scaleInBounce 0.8s $transition-smooth;
+  display: inline-block;
+}
+
+// ===== العنوان والوصف =====
+.success-title {
+  font-family: $font-family-headings;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $primary-color;
+  margin-bottom: 1rem;
+  animation: fadeInDown 0.8s ease-out 0.2s both;
+}
+
+.success-subtitle {
+  font-size: 1.1rem;
+  color: $text-light;
+  margin-bottom: 3rem;
+  line-height: 1.8;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+// ===== معلومات الطلب =====
+.order-info {
+  background: linear-gradient(135deg, rgba($primary-color, 0.05), rgba($secondary-color, 0.05));
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba($secondary-color, 0.2);
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.order-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  text-align: center;
+}
+
+.info-label {
+  font-size: 0.9rem;
+  color: $text-light;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $primary-color;
+  word-break: break-all;
+
+  &.order-number {
+    font-family: 'Courier New', monospace;
+    background: rgba($secondary-color, 0.1);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    display: inline-block;
+  }
+}
+
+// ===== خطوات الشحن =====
+.shipping-steps {
+  margin-bottom: 2.5rem;
+  animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+.steps-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: $primary-color;
+  margin-bottom: 1.5rem;
+}
+
+.steps-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.step {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  position: relative;
+}
+
+.step-number {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, $primary-color, $primary-light);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 0 auto 0.8rem;
+  box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+  animation: scaleIn 0.6s $transition-smooth;
+  animation-delay: calc(0.1s * var(--step-index));
+}
+
+.step-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $text-color;
+  margin-bottom: 0.3rem;
+}
+
+.step-desc {
+  font-size: 0.8rem;
+  color: $text-light;
+}
+
+.step-connector {
+  position: absolute;
+  top: 25px;
+  left: -50%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, $secondary-color, transparent);
+  z-index: 0;
+
+  &:first-child {
+    display: none;
+  }
+}
+
+// ===== الأزرار =====
+.btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-smooth;
+  text-decoration: none;
+  text-align: center;
+  font-family: $font-family-base;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  &:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  &.btn-primary {
+    background: linear-gradient(135deg, $primary-color, $primary-light);
+    color: white;
+    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($primary-color, 0.4);
+    }
+  }
+
+  &.btn-secondary {
+    background: white;
+    color: $primary-color;
+    border: 2px solid $primary-color;
+    box-shadow: 0 4px 15px rgba($primary-color, 0.15);
+
+    &:hover {
+      background: $primary-color;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+    }
+  }
+
+  i {
+    margin-left: 0.5rem;
+  }
+}
+
+// ===== الإجراءات =====
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+// ===== معلومات إضافية =====
+.additional-info {
+  background: linear-gradient(135deg, rgba($success-color, 0.05), rgba($secondary-color, 0.05));
+  border-radius: 15px;
+  padding: 1.5rem;
+  border-left: 4px solid $success-color;
+  animation: fadeInUp 0.8s ease-out 0.7s both;
+
+  h3 {
+    font-size: 1.1rem;
+    color: $primary-color;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: $text-light;
+    line-height: 1.7;
+  }
+}
+
+// ===== الرسوم المتحركة =====
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleInBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ===== نسخ الرقم =====
+.copy-btn {
+  background: none;
+  border: none;
+  color: $secondary-color;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  transition: all $transition-base;
+  padding: 0.5rem;
+
+  &:hover {
+    color: $primary-color;
+    transform: scale(1.2);
+  }
+}
+
+// ===== إشعار النسخ =====
+.copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: $success-color;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 50px;
+  box-shadow: $shadow-lg;
+  animation: slideIn 0.4s ease-out;
+  z-index: 1000;
+}
+
+// ===== الاستجابة للشاشات الصغيرة =====
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .success-card {
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .success-title {
+    font-size: 2rem;
+  }
+
+  .success-subtitle {
+    font-size: 1rem;
+  }
+
+  .order-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .steps-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .step-connector {
+    display: none !important;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .success-icon {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .success-card {
+    padding: 2rem 1rem;
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+  }
+
+  .success-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .order-info {
+    padding: 1.5rem 1rem;
+  }
+
+  .btn {
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .success-icon {
+    font-size: 3.5rem;
+  }
+}

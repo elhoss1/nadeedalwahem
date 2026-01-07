@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
 import { WoocommerceService } from '../../services/woocommerce.service';
+import { CategoriesBarComponent } from "../categories-bar/categories-bar";
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, CategoriesBarComponent],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
 })

@@ -13,6 +13,7 @@ export class WoocommerceService {
   // تحذير: يفضل وضع المفاتيح في environment.ts وعدم تركها هنا لأسباب أمنية
   private readonly wooBaseUrl = 'https://www.nadeedalwashm.com/wp-json/wc/v3';
   private readonly wpBaseUrl = 'https://www.nadeedalwashm.com/wp-json/wp/v2';
+  private readonly customApiBaseUrl = 'https://www.nadeedalwashm.com/wp-json';
 
   private readonly consumerKey = 'ck_c039cdfa4d414f773dfde6f88a9bd7d356f8a11a';
   private readonly consumerSecret = 'cs_7e000061084cfcf98c3d3ac063508856404da1ee';
@@ -119,6 +120,19 @@ export class WoocommerceService {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(this.handleError('createOrder'))
+    );
+  }
+
+
+  createMoyasarPayment(amount: number, orderId: number): Observable<{ success: boolean, payment_url: string }> {
+    const moyasarEndpoint = `${this.customApiBaseUrl}/moyasar-api/v1/create-payment`;
+    const body = {
+      amount: amount,
+      order_id: orderId,
+      description: `الدفع لطلب رقم #${orderId} من نضيد الوشم`
+    };
+    return this.http.post<{ success: boolean, payment_url: string }>(moyasarEndpoint, body ).pipe(
+      catchError(this.handleError('createMoyasarPayment'))
     );
   }
 
