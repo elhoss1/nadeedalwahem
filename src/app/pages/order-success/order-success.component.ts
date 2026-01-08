@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WoocommerceService } from '../../services/woocommerce.service';
 import { Subscription, of, throwError } from 'rxjs';
@@ -7,7 +7,6 @@ import { switchMap, catchError, tap } from 'rxjs/operators';
 // الوحدات المطلوبة للمكون المستقل (Standalone)
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-order-success',
@@ -32,7 +31,8 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private wooService: WoocommerceService,
-    private cart: CartService
+    private cdr: ChangeDetectorRef, // حقن ChangeDetectorRef كإجراء وقائي
+
   ) {}
 
   ngOnInit(): void {
@@ -88,10 +88,11 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
       next: (finalOrder) => {
         // --- حالة النجاح ---
         console.log('Order confirmation successful!', finalOrder);
+        this.cdr.detectChanges(); // إجبار تحديث الواجهة حتى عند الخطأ
         this.order = finalOrder;
         this.isSuccess = true;
         this.isLoading = false;
-        this.cart.clearCart(); // تفريغ سلة المشتريات
+        this.wooService.clearCart(); // تفريغ سلة المشتريات
       },
       error: (err) => {
         // --- حالة الفشل ---
