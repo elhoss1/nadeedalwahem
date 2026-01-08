@@ -187,18 +187,25 @@ export class WoocommerceService {
   /**
    * تحديث حالة الطلب
    */
-  updateOrderStatus(orderId: string, status: string): Observable<any> {
-    return this.http.put(
-      `${this.wpBaseUrl}/orders/${orderId}`,
-      { status },
-      {
-        params: {
-          consumer_key: this.consumerKey,
-          consumer_secret: this.consumerSecret
-        }
-      }
-    );
-  }
+  /**
+ * تحديث حالة الطلب (النسخة الصحيحة)
+ */
+updateOrderStatus(orderId: string, status: string): Observable<any> {
+  // 1. استخدام المسار الصحيح لووكومرس
+  const endpoint = `${this.wooBaseUrl}/orders/${orderId}`;
+  const body = { status: status };
+
+  console.log(`Sending PUT request to: ${endpoint}`); // للتأكد من المسار
+
+  // 2. استخدام Basic Auth في الهيدر (الطريقة الصحيحة لطلبات PUT)
+  return this.http.put(endpoint, body, {
+    headers: this.getAuthHeaders( ) // <-- استخدام الدالة المساعدة للمصادقة
+  }).pipe(
+    // يمكنك إضافة معالجة أخطاء مخصصة هنا إذا أردت
+    catchError(this.handleError(`updateOrderStatus id=${orderId}`))
+  );
+}
+
 
   // =================================================================
   // Section 5: Cart Management (إدارة السلة)
