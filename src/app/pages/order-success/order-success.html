@@ -1,29 +1,58 @@
-<!-- استخدم نفس القالب الذي اقترحته سابقاً مع المتغيرات الجديدة -->
-<div class="container">
-
-  <!-- حالة التحميل -->
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner-border" role="status"></div>
-    <p>جاري تأكيد الدفع وتحديث طلبك...</p>
+<!-- حالة التحميل -->
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
   </div>
+  <p>جاري تأكيد طلبك...</p>
+</div>
 
-  <!-- حالة نجاح الدفع -->
-  <div *ngIf="!isLoading && isSuccess && order" class="content-box success-state">
-    <i class="bi bi-check-circle-fill icon"></i>
-    <h1>شكراً لك! تم استلام طلبك بنجاح.</h1>
-    <p class="lead">رقم طلبك هو: <strong>#{{ order.id }}</strong></p>
-    <!-- ... باقي تفاصيل الطلب ... -->
-    <a routerLink="/" class="btn btn-primary">العودة إلى الصفحة الرئيسية</a>
+<!-- بطاقة التأكيد (للنجاح أو الفشل) -->
+<div *ngIf="!isLoading" class="confirmation-card">
+
+  <!-- حالة النجاح -->
+  <div *ngIf="isSuccess && order" class="success-state">
+    <div class="icon-wrapper">
+      <i class="bi bi-patch-check-fill icon"></i>
+    </div>
+    <h1>شكراً لك، طلبك مؤكد!</h1>
+    <p class="message">
+      تم استلام طلبك بنجاح. رقم طلبك هو <strong>#{{ order.id }}</strong>
+    </p>
+
+    <!-- ملخص الطلب -->
+    <div class="order-summary">
+      <h4>ملخص الطلب</h4>
+      <ul class="list-group">
+        <li *ngFor="let item of order.line_items" class="list-group-item">
+          <span class="item-details">{{ item.name }} (x{{ item.quantity }})</span>
+          <span class="item-price">{{ item.total | currency:'SAR' }}</span>
+        </li>
+        <li class="list-group-item total-row">
+          <span>الإجمالي</span>
+          <span>{{ order.total | currency:'SAR' }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- الأزرار -->
+    <div class="actions">
+      <a routerLink="/my-account/orders" class="btn btn-primary">متابعة حالة الطلب</a>
+      <a routerLink="/" class="btn btn-secondary">مواصلة التسوق</a>
+    </div>
   </div>
 
   <!-- حالة الفشل -->
-  <div *ngIf="!isLoading && !isSuccess" class="content-box error-state">
-    <i class="bi bi-x-circle-fill icon"></i>
-    <h1>حدث خطأ</h1>
-    <p class="lead error-message" *ngIf="error">
+  <div *ngIf="!isSuccess" class="error-state">
+    <div class="icon-wrapper">
+      <i class="bi bi-x-octagon-fill icon"></i>
+    </div>
+    <h1>حدث خطأ ما</h1>
+    <p class="message" *ngIf="error">
       {{ error }}
     </p>
-    <a routerLink="/checkout" class="btn btn-warning">المحاولة مرة أخرى</a>
+    <div class="actions">
+      <a routerLink="/checkout" class="btn btn-primary">المحاولة مرة أخرى</a>
+    </div>
   </div>
 
 </div>

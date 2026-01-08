@@ -7,6 +7,7 @@ import { switchMap, catchError, tap } from 'rxjs/operators';
 // الوحدات المطلوبة للمكون المستقل (Standalone)
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-order-success',
@@ -30,7 +31,8 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private wooService: WoocommerceService
+    private wooService: WoocommerceService,
+    private cart: CartService
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +91,7 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
         this.order = finalOrder;
         this.isSuccess = true;
         this.isLoading = false;
-        this.wooService.clearCart(); // تفريغ سلة المشتريات
+        this.cart.clearCart(); // تفريغ سلة المشتريات
       },
       error: (err) => {
         // --- حالة الفشل ---
