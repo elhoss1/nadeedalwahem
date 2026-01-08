@@ -28,6 +28,7 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private wooService: WoocommerceService,
     private cdr: ChangeDetectorRef, // حقن ChangeDetectorRef كإجراء وقائي
+
     private zone: NgZone // 2. حقن NgZone في الـ constructor
   ) {}
 
@@ -68,7 +69,6 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: (finalOrder) => {
-
         // 3. تنفيذ الكود الذي يغير الحالة داخل NgZone.run()
         this.zone.run(() => {
           console.log('Order confirmation successful! Running in zone.');
