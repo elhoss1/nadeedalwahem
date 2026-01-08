@@ -11,9 +11,9 @@ import { Product } from '../interface/product';
 export class WoocommerceService {
   // === Configuration ===
   // تحذير: يفضل وضع المفاتيح في environment.ts وعدم تركها هنا لأسباب أمنية
-  private readonly wooBaseUrl = 'https://www.nadeedalwashm.com/wp-json/wc/v3';
-  private readonly wpBaseUrl = 'https://www.nadeedalwashm.com/wp-json/wp/v2';
-  private readonly customApiBaseUrl = 'https://www.nadeedalwashm.com/wp-json';
+  private readonly wooBaseUrl = 'https://www.nadeedalwashm.com/backend/wp-json/wc/v3';
+  private readonly wpBaseUrl = 'https://www.nadeedalwashm.com/backend/wp-json/wp/v2';
+  private readonly customApiBaseUrl = 'https://www.nadeedalwashm.com/backend/wp-json';
 
   private readonly consumerKey = 'ck_c039cdfa4d414f773dfde6f88a9bd7d356f8a11a';
   private readonly consumerSecret = 'cs_7e000061084cfcf98c3d3ac063508856404da1ee';
