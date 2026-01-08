@@ -73,6 +73,8 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
       switchMap(updatedOrder => {
         if (updatedOrder && updatedOrder.id) {
           console.log(`Fetching full details for order ${updatedOrder.id}`);
+        this.cdr.detectChanges(); // إجبار تحديث الواجهة حتى عند الخطأ
+
           return this.wooService.getOrder(updatedOrder.id).pipe(
             catchError(err => {
               console.error('Error fetching final order details:', err);
