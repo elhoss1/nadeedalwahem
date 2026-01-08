@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core'; // 1. استيراد NgZone
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core'; // 1. إعادة استيراد ChangeDetectorRef
 import { ActivatedRoute } from '@angular/router';
 import { WoocommerceService } from '../../services/woocommerce.service';
 import { Subscription, of, throwError } from 'rxjs';
-import { switchMap, catchError, tap } from 'rxjs/operators';
+import { switchMap, catchError, tap, finalize } from 'rxjs/operators'; // 2. استيراد finalize
 
 // الوحدات المطلوبة
 import { CommonModule } from '@angular/common';
@@ -27,7 +27,7 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private wooService: WoocommerceService,
-    private zone: NgZone // 2. حقن NgZone في الـ constructor
+    private cdr: ChangeDetectorRef // 3. إعادة حقن ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -64,26 +64,29 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
           );
         }
         return throwError(() => new Error('لم يتم العثور على الطلب بعد التحديث.'));
+      }),
+      // 4. استخدام finalize لضمان إيقاف التحميل دائماً
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges(); // تحديث الواجهة لإخفاء التحميل
       })
     ).subscribe({
       next: (finalOrder) => {
-        // 3. تنفيذ الكود الذي يغير الحالة داخل NgZone.run()
-        this.zone.run(() => {
-          console.log('Order confirmation successful! Running in zone.');
-          this.order = finalOrder;
-          this.isSuccess = true;
-          this.isLoading = false;
-          this.wooService.clearCart();
-        });
+        // --- حالة النجاح ---
+        this.order = finalOrder;
+        this.isSuccess = true;
+        this.wooService.clearCart();
+
+        // 5. استدعاء detectChanges بعد تحديث كل متغيرات النجاح
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        // 4. تنفيذ كود الخطأ أيضاً داخل NgZone.run()
-        this.zone.run(() => {
-          console.error('An error occurred. Running in zone.');
-          this.error = err.message;
-          this.isSuccess = false;
-          this.isLoading = false;
-        });
+        // --- حالة الفشل ---
+        this.error = err.message;
+        this.isSuccess = false;
+
+        // 6. استدعاء detectChanges بعد تحديث كل متغيرات الفشل
+        this.cdr.detectChanges();
       }
     });
   }
