@@ -63,7 +63,7 @@ export const routes: Routes = [
 
   { path: 'blog', loadComponent: () => import('./pages/blog/blog').then(m => m.BlogComponent) },
   { path: 'blog/:id', loadComponent: () => import('./pages/blog-post/blog-post').then(m => m.BlogPostComponent) },
-  { path: 'order-success/:id', loadComponent: () => import('./pages/order-success/order-success.component').then(m => m.OrderSuccessComponent) },
+  { path: 'order-success', loadComponent: () => import('./pages/order-success/order-success.component').then(m => m.OrderSuccessComponent) },
 
   { path: '**', redirectTo: '' }
 ];

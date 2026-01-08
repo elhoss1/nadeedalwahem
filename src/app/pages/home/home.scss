@@ -268,18 +268,25 @@ $font-family-base: 'Cairo', 'Segoe UI', sans-serif;
   .riyal-svg { display: inline-block; width: 1em; height: 1.1em; vertical-align: -0.1em; margin-right: 2px; }
 }
 
+
+
 // ======================================================
 //  تخصيص Swiper
 // ======================================================
 swiper-container {
-  width: 100%;
+   width: 100%;
   padding: 1rem 0 3rem;
+
   --swiper-navigation-color: #{$primary-color};
   --swiper-navigation-size: 30px;
+
   --swiper-pagination-color: #{$primary-color};
   --swiper-pagination-bullet-inactive-color: #{$border-color};
   --swiper-pagination-bullet-inactive-opacity: 1;
   --swiper-pagination-bullet-size: 10px;
+
+  /* 👇 نزول النقط */
+  --swiper-pagination-bottom: -20px;
 }
 swiper-slide { height: auto; }
 
@@ -417,3 +424,9 @@ $secondary-color: #fff;
 // ======================================================
 //  (باقي الأنماط مثل Product Card و Swiper و Features كما هي)
 // ======================================================
+
+@media (max-width: 768px) {
+  .swiper-pagination {
+    display: none;
+  }
+}
