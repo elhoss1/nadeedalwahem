@@ -1,118 +1,64 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { WoocommerceService } from '../../services/woocommerce.service';
 
-interface OrderDetails {
-  orderNumber: string;
-  orderDate: string;
-  totalAmount: number;
-  currency: string;
-  customerEmail: string;
-  shippingStatus: 'received' | 'processing' | 'shipped' | 'delivered';
-}
 
 @Component({
   selector: 'app-order-success',
   templateUrl: './order-success.html',
   styleUrls: ['./order-success-styles.scss']
 })
-export class OrderSuccessComponent implements OnInit, OnDestroy {
-
-  order: OrderDetails | null = null;
-  isLoading = true;
-
-  private destroy$ = new Subject<void>();
+export class OrderSuccessComponent implements OnInit {
+loading = true;
+  paymentSuccess = false;
+  errorMessage: string | null = null;
+  order: any = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private woocommerceService: WoocommerceService
+    private wooService: WoocommerceService
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const orderId = params.get('id');
-        if (orderId) {
-          this.getOrder(orderId);
-        }
-      });
-  }
+    // قراءة المُعرّفات من رابط العودة
+    const paymentId = this.route.snapshot.queryParamMap.get('id');
+    const status = this.route.snapshot.queryParamMap.get('status');
+    const orderId = this.route.snapshot.queryParamMap.get('order_id'); // افترض أنك تمرر هذا
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  /**
-   * جلب الطلب الحقيقي
-   */
-  private getOrder(orderId: string): void {
-    this.isLoading = true;
-
-    this.woocommerceService.getOrderById(orderId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (order) => {
-          this.order = {
-            orderNumber: order.id,
-            orderDate: order.date_created,
-            totalAmount: Number(order.total),
-            currency: order.currency,
-            customerEmail: order.billing.email,
-            shippingStatus: this.mapOrderStatus(order.status)
-          };
-          this.isLoading = false;
-        },
-        error: () => {
-          this.isLoading = false;
-          this.router.navigate(['/']);
-        }
-      });
-  }
-
-  /**
-   * تحويل حالة WooCommerce
-   */
-  private mapOrderStatus(status: string): OrderDetails['shippingStatus'] {
-    switch (status) {
-      case 'pending':
-        return 'received';
-      case 'processing':
-        return 'processing';
-      case 'completed':
-        return 'delivered';
-      default:
-        return 'received';
+    if (status === 'paid' && paymentId && orderId) {
+      // الدفع ناجح ظاهرياً، لنتحقق من الخادم
+      this.verifyPaymentAndUpdateOrder(orderId);
+    } else {
+      // الدفع فشل أو الرابط غير صحيح
+      this.loading = false;
+      this.paymentSuccess = false;
+      this.errorMessage = this.route.snapshot.queryParamMap.get('message') || 'فشلت عملية الدفع.';
     }
   }
 
-  copyOrderNumber(): void {
-    if (!this.order) return;
-
-    navigator.clipboard.writeText(this.order.orderNumber);
-  }
-
-  trackOrder(): void {
-    if (this.order) {
-      this.router.navigate(['/orders/track', this.order.orderNumber]);
-    }
-  }
-
-  goToHome(): void {
-    this.router.navigate(['/']);
-  }
-
-  getStepIndex(): number {
-    const map = {
-      received: 0,
-      processing: 1,
-      shipped: 2,
-      delivered: 3
-    };
-    return this.order ? map[this.order.shippingStatus] : 0;
+  private verifyPaymentAndUpdateOrder(orderId: string): void {
+    // 1. تحديث حالة الطلب في ووكومرس
+    this.wooService.updateOrderStatus(orderId, 'processing').pipe(
+      switchMap(updatedOrder => {
+        // 2. بعد التحديث الناجح، جلب تفاصيل الطلب لعرضها
+        this.order = updatedOrder;
+        this.paymentSuccess = true;
+        this.loading = false;
+        // 3. تفريغ سلة المشتريات
+        this.wooService.clearCart();
+        return of(updatedOrder); // Continue pipe
+      }),
+      catchError(error => {
+        // حدث خطأ أثناء تحديث الطلب
+        console.error('Error updating order status:', error);
+        this.loading = false;
+        this.paymentSuccess = false;
+        this.errorMessage = 'حدث خطأ أثناء تأكيد طلبك. الرجاء التواصل مع الدعم الفني وتزويدهم برقم الطلب: ' + orderId;
+        return of(null); // Handle error gracefully
+      })
+    ).subscribe();
   }
 }
