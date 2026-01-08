@@ -1,53 +1,27 @@
+<!-- استخدم نفس القالب الذي اقترحته سابقاً مع المتغيرات الجديدة -->
 <div class="container">
 
   <!-- حالة التحميل -->
-  <div *ngIf="loading" class="loading-state">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner-border" role="status"></div>
     <p>جاري تأكيد الدفع وتحديث طلبك...</p>
   </div>
 
   <!-- حالة نجاح الدفع -->
-  <div *ngIf="!loading && paymentSuccess && order" class="content-box success-state">
+  <div *ngIf="!isLoading && isSuccess && order" class="content-box success-state">
     <i class="bi bi-check-circle-fill icon"></i>
     <h1>شكراً لك! تم استلام طلبك بنجاح.</h1>
-    <p class="lead">
-      لقد تم تأكيد الدفع بنجاح. رقم طلبك هو: <strong>#{{ order.id }}</strong>
-    </p>
-    <p>
-      ستصلك رسالة عبر البريد الإلكتروني تحتوي على تفاصيل الطلب.
-    </p>
-
-    <div class="order-summary">
-      <hr>
-      <h4>ملخص الطلب</h4>
-      <ul class="list-group mb-3">
-        <li *ngFor="let item of order.line_items" class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">{{ item.name }} (x{{ item.quantity }})</h6>
-          </div>
-          <span class="text-muted">{{ item.total }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span>الإجمالي (شامل الضريبة)</span>
-          <strong>{{ order.total }}</strong>
-        </li>
-      </ul>
-    </div>
-
+    <p class="lead">رقم طلبك هو: <strong>#{{ order.id }}</strong></p>
+    <!-- ... باقي تفاصيل الطلب ... -->
     <a routerLink="/" class="btn btn-primary">العودة إلى الصفحة الرئيسية</a>
   </div>
 
-  <!-- حالة فشل الدفع -->
-  <div *ngIf="!loading && !paymentSuccess" class="content-box error-state">
+  <!-- حالة الفشل -->
+  <div *ngIf="!isLoading && !isSuccess" class="content-box error-state">
     <i class="bi bi-x-circle-fill icon"></i>
-    <h1>حدث خطأ في الدفع</h1>
-    <p class="lead error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
-    </p>
-    <p>
-      الرجاء محاولة الدفع مرة أخرى أو التواصل مع خدمة العملاء.
+    <h1>حدث خطأ</h1>
+    <p class="lead error-message" *ngIf="error">
+      {{ error }}
     </p>
     <a routerLink="/checkout" class="btn btn-warning">المحاولة مرة أخرى</a>
   </div>
