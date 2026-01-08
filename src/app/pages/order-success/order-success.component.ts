@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { WoocommerceService } from '../../services/woocommerce.service';
 
 interface OrderDetails {
   orderNumber: string;
@@ -18,23 +19,27 @@ interface OrderDetails {
   styleUrls: ['./order-success-styles.scss']
 })
 export class OrderSuccessComponent implements OnInit, OnDestroy {
-  // بيانات الطلب
-  order: OrderDetails | null = null;
 
-  // حالة التحميل
+  order: OrderDetails | null = null;
   isLoading = true;
 
-  // للتحكم في إلغاء الاشتراكات
   private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private woocommerceService: WoocommerceService
   ) {}
 
   ngOnInit(): void {
-    this.loadOrderDetails();
-    this.triggerConfetti();
+    this.route.paramMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const orderId = params.get('id');
+        if (orderId) {
+          this.getOrder(orderId);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -43,87 +48,71 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * تحميل تفاصيل الطلب من الرابط أو الخدمة
+   * جلب الطلب الحقيقي
    */
-  private loadOrderDetails(): void {
-    // محاكاة تحميل البيانات
-    // في الواقع، قد تحصل على رقم الطلب من الـ Params
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      const orderId = params['id'] || '12345678';
+  private getOrder(orderId: string): void {
+    this.isLoading = true;
 
-      // محاكاة استدعاء API
-      setTimeout(() => {
-        this.order = {
-          orderNumber: orderId,
-          orderDate: new Date().toLocaleDateString('ar-SA', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-          }),
-          totalAmount: 450,
-          currency: 'ر.س',
-          customerEmail: 'customer@example.com',
-          shippingStatus: 'received'
-        };
-        this.isLoading = false;
-      }, 1000);
-    });
-  }
-
-  /**
-   * تشغيل تأثير الاحتفال
-   */
-  private triggerConfetti(): void {
-    // يمكن استدعاء دالة JavaScript لإنشاء التأثير
-    // أو استخدام مكتبة مثل canvas-confetti
-    console.log('Confetti triggered!');
-  }
-
-  /**
-   * نسخ رقم الطلب إلى الحافظة
-   */
-  copyOrderNumber(): void {
-    if (this.order) {
-      navigator.clipboard.writeText(this.order.orderNumber).then(() => {
-        this.showNotification('تم نسخ رقم الطلب بنجاح!');
+    this.woocommerceService.getOrderById(orderId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (order) => {
+          this.order = {
+            orderNumber: order.id,
+            orderDate: order.date_created,
+            totalAmount: Number(order.total),
+            currency: order.currency,
+            customerEmail: order.billing.email,
+            shippingStatus: this.mapOrderStatus(order.status)
+          };
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+          this.router.navigate(['/']);
+        }
       });
+  }
+
+  /**
+   * تحويل حالة WooCommerce
+   */
+  private mapOrderStatus(status: string): OrderDetails['shippingStatus'] {
+    switch (status) {
+      case 'pending':
+        return 'received';
+      case 'processing':
+        return 'processing';
+      case 'completed':
+        return 'delivered';
+      default:
+        return 'received';
     }
   }
 
-  /**
-   * عرض إشعار مؤقت
-   */
-  private showNotification(message: string): void {
-    // منطق عرض الإشعار
-    console.log(message);
+  copyOrderNumber(): void {
+    if (!this.order) return;
+
+    navigator.clipboard.writeText(this.order.orderNumber);
   }
 
-  /**
-   * متابعة حالة الطلب
-   */
   trackOrder(): void {
     if (this.order) {
       this.router.navigate(['/orders/track', this.order.orderNumber]);
     }
   }
 
-  /**
-   * العودة إلى الصفحة الرئيسية
-   */
   goToHome(): void {
     this.router.navigate(['/']);
   }
 
-  /**
-   * الحصول على مؤشر الخطوة الحالية للشحن
-   */
   getStepIndex(): number {
-    const statusMap = {
-      'received': 0,
-      'processing': 1,
-      'shipped': 2,
-      'delivered': 3
+    const map = {
+      received: 0,
+      processing: 1,
+      shipped: 2,
+      delivered: 3
     };
-    return this.order ? statusMap[this.order.shippingStatus] : 0;
+    return this.order ? map[this.order.shippingStatus] : 0;
   }
 }

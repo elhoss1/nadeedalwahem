@@ -3,6 +3,7 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WoocommerceService } from '../../services/woocommerce.service';
 import { RouterLink } from '@angular/router';
+import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-checkout',
@@ -40,6 +41,7 @@ export class CheckoutComponent implements OnInit {
     private woocommerceService: WoocommerceService,
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
+    private cartService : CartService,
     // =================================================================
     // 🔥 جديد: حقن PLATFORM_ID للتحقق من بيئة المتصفح
     // =================================================================
@@ -146,6 +148,8 @@ export class CheckoutComponent implements OnInit {
     // 1. إنشاء الطلب في ووكومرس أولاً
     this.woocommerceService.createOrder(orderData).subscribe({
       next: (createdOrder) => {
+
+        this.cartService.clearCart();
         // إذا كان الدفع عند الاستلام، تكون العملية قد انتهت بنجاح هنا
         if (!isOnlinePayment) {
           this.handleCodSuccess();

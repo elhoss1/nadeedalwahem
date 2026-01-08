@@ -154,6 +154,52 @@ export class WoocommerceService {
     );
   }
 
+
+
+  getOrderById(orderId: string): Observable<any> {
+    return this.http.get(
+      `${this.wpBaseUrl}/orders/${orderId}`,
+      {
+        params: {
+          consumer_key: this.consumerKey,
+          consumer_secret: this.consumerSecret
+        }
+      }
+    );
+  }
+
+  /**
+   * جلب الطلبات الخاصة بإيميل عميل
+   */
+  getOrdersByEmail(email: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.wpBaseUrl}/orders`,
+      {
+        params: {
+          consumer_key: this.consumerKey,
+          consumer_secret: this.consumerSecret,
+          billing_email: email
+        }
+      }
+    );
+  }
+
+  /**
+   * تحديث حالة الطلب
+   */
+  updateOrderStatus(orderId: string, status: string): Observable<any> {
+    return this.http.put(
+      `${this.wpBaseUrl}/orders/${orderId}`,
+      { status },
+      {
+        params: {
+          consumer_key: this.consumerKey,
+          consumer_secret: this.consumerSecret
+        }
+      }
+    );
+  }
+
   // =================================================================
   // Section 5: Cart Management (إدارة السلة)
   // =================================================================
